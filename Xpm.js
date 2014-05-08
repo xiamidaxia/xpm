@@ -14,6 +14,7 @@ var proto
  * @public
  * @param {Object} config
  * //todo 目前采用同步加载，可以改成异步加载来提高性能
+ * //todo outs要在创建的时候就检测是否为default
  *      {
  *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
  *          "check": {Boolean} true 是否检测循环依赖，这是一个比较耗时的操作在生产环境可以动态设置为false, 默认true
@@ -54,11 +55,10 @@ proto._clientUse = function(packageName) {
     //p.exec()
 }
 proto._addPackage = function(packageName, type, isDefault) {
-    var p, requireArr, self, _map, context, _defaultPack, _outs
+    var p, requireArr, self, _map, context
     self = this
     _map = this.getMap(type)
     context = {}
-    _outs = {}
     if (p = _map[packageName]) return p
     p = _map[packageName] = new Package({cwd: this._cwd, name: packageName, type: type, default: isDefault})
     //p.readPackagejs() //读取package.js文件
@@ -70,15 +70,8 @@ proto._addPackage = function(packageName, type, isDefault) {
     if (this._checkRecurse) this._setPackageSequencyRequire(p, requireArr, type)
     //执行
     if (type === "server") {
-        if (self._defaultLoaded) { //扩展默认的
-            defaultPack = self._getDefaultPackage(type)
-            _.each(defaultPack.getOuts() || {}, function(key) {
-                if (!self.outs || !self.outs[key]) throw new Error("default package needs "+key+" value from this xpm 'out' param.")
-                _outs[key] = self.outs[key]
-            })
-            _.extend(context, _outs, defaultPack.getExports())
-        }
-        //this.outs = config.outs
+        console.log(p._name)
+        self._extendDefaults(context, type)
         _.each(p.getRequire(), function(item) {
             context[item] = self._serverMap[item].getExports()
         })
@@ -88,6 +81,23 @@ proto._addPackage = function(packageName, type, isDefault) {
     }
     return p
 }
+proto._extendDefaults = function(context, type) {
+    var _outs = {}
+    var self = this
+    var defaultPack = self._getDefaultPackage(type)
+    if (defaultPack) {
+        _.each(defaultPack.getOuts() || {}, function(key) {
+            if (!self.outs || !self.outs[key]) throw new Error("default package needs "+key+" value from this xpm 'out' param.")
+            _outs[key] = self.outs[key]
+        })
+        util.extend(context, _outs)
+    }
+    if (self._defaultLoaded) { //扩展默认的
+        util.extend(context, defaultPack.getExports())
+    }
+
+}
+
 proto._setPackageSequencyRequire = function(packageObj, requireArr, type) {
     var result = [], items = {}, self = this
     if (!packageObj.getSequencyRequire()) {

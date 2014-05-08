@@ -1,7 +1,6 @@
 /**
  *  xiami 包管理器
  *  @author liuwencheng
- *  @date 14-5-4
  *
  *    todo 1. add the gulp stream,
  *    todo 2. add the mocha test

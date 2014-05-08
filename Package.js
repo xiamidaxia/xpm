@@ -10,6 +10,7 @@ var EventEmitter = require('events').EventEmitter
 var _ = require("underscore")
 var assertType = util.assertType
 var extend = util.extend
+var fs = require('fs')
 
 var proto
 /**
@@ -125,7 +126,8 @@ proto._execServer = function(requireContext) {
  */
 proto._execClient = function() {
     var _content = this._getFileContent()
-    //console.log(_content)
+    //todo
+    // console.log(_content)
     //console.log(_content)
     //md5
     //console.log("gagag")
@@ -141,6 +143,7 @@ proto._getFileContent = function() {
     var _contentStart = "define(function(__require__, exports, module){"
     var _contentEnd = "})"
     var _r
+    var self = this
     _.each(this._data.require, function(item, key) {
         _r = "var " + item + " = " + "__require__(\"" + key + "\");"
     })
