@@ -1,7 +1,7 @@
 #Xiami Package Manager
 
 a simple javascript code package manager, can be manage well
-with the client side and server side code, like [Meteor](http://docs.meteor.com) package.
+with the client side and server side code, like [Meteor](https://github.com/meteor/meteor) package.
 
 ##tutorials
 
@@ -16,7 +16,7 @@ console.log(meteor.version)
 
 ```
 
-in ther package like 'meteor', you need to add the file 'package.js' like this:
+in the package like 'meteor', you need to add the file 'package.js' like this:
 
 ```javascript
 Package.describe({
