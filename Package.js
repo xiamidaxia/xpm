@@ -36,7 +36,7 @@ function _Package(config) {
         this._version = null //版本号, 用于确定包的md5值 todo
     }
     if (this._default) {
-        this._data.outs = {}
+        this._data.imports = {}
         this._data.exports = this._data.require
     }
     this._sequencyRequire = null //按顺序依赖的数组 {Array}, 该值可用于检测是否循环依赖
@@ -48,8 +48,8 @@ proto._addData = function(data) {
     var self = this
     _.each(data, function(item, key) {
         var _item
-        if (self._default && !~(["defaults", "outs"].indexOf(key))) {
-            throw new Error("default package only can use 'defaults' and 'outs', key '"+key+"' uncorrect !")
+        if (self._default && !~(["defaults", "imports"].indexOf(key))) {
+            throw new Error("default package only can use 'defaults' and 'imports', key '"+key+"' uncorrect !")
         }
         if (key == "nrequire" && self._type !== "server") {
             throw new Error("nrequire only use in the server!")
@@ -58,7 +58,7 @@ proto._addData = function(data) {
             case "defaults":
                 key = "require" //defaultRequire转化为require
             case "nrequire":
-            case "outs":
+            case "imports":
             case "require":
             case "exports":
                 assertType(item, "Array | Object", "'" + key + "' need a Array or Object.")
@@ -160,8 +160,8 @@ proto._getFileContent = function() {
 proto.getExports = function() {
     return this._exports
 }
-proto.getOuts = function() {
-    return this._data.outs
+proto.getImports = function() {
+    return this._data.imports
 }
 /**
  * 获取包的无顺序依赖数组

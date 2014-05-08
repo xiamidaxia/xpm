@@ -1,4 +1,4 @@
 Package.server({
     "defaults": ["c","b"],
-    "outs": ["outs1"]
+    "imports": ["outs1"]
 })

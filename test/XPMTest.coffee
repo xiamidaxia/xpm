@@ -48,13 +48,13 @@ describe "xpm", ()->
     describe 'check defaults', ->
         xpm = null
         it '创建包含default的xpm', (done) ->
-            xpm = new XPM({cwd: __dirname + '/pack1',default: true, outs:{outs1: "this is in outs1."}})
+            xpm = new XPM({cwd: __dirname + '/pack1',default: true, imports:{outs1: "this is in outs1."}})
             done()
         it 'default默认加载的require可直接调用', (done) ->
             d = xpm.require('d')
             d.should.eql({ name: 'd', 'this is from b extend': 'b module exports info' })
             done()
-        it 'default outs 参数是否可调用', (done) ->
+        it 'default imports 参数是否可调用', (done) ->
             e = xpm.require('e')
             e.should.eql({ name: 'e', 'this is from outs1': 'this is in outs1.' })
             done()

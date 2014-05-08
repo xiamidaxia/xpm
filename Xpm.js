@@ -14,12 +14,12 @@ var proto
  * @public
  * @param {Object} config
  * //todo 目前采用同步加载，可以改成异步加载来提高性能
- * //todo outs要在创建的时候就检测是否为default
+ * //todo imports要在创建的时候就检测是否为default
  *      {
  *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
  *          "check": {Boolean} true 是否检测循环依赖，这是一个比较耗时的操作在生产环境可以动态设置为false, 默认true
  *          "default": {Boolean} false 是否需要调用默认包，默认该值为false
- *          "outs": {Object} this will add to the default outs.
+ *          "imports": {Object} this will add to the default imports.
  *      }
  */
 function Xpm(config) {
@@ -27,7 +27,7 @@ function Xpm(config) {
     if (config.cwd[0] !== "/") throw new Error("create Xpm cwd '" + config.cwd + "' need a real path.")
     this._cwd = path.join(config.cwd)
     this._checkRecurse = config.check === undefined ? true : config.check
-    this.outs = config.outs
+    this.imports = config.imports
     this._clientMap = {}
     this._serverMap = {}
     this._defaultLoaded = false
@@ -70,7 +70,6 @@ proto._addPackage = function(packageName, type, isDefault) {
     if (this._checkRecurse) this._setPackageSequencyRequire(p, requireArr, type)
     //执行
     if (type === "server") {
-        console.log(p._name)
         self._extendDefaults(context, type)
         _.each(p.getRequire(), function(item) {
             context[item] = self._serverMap[item].getExports()
@@ -82,15 +81,15 @@ proto._addPackage = function(packageName, type, isDefault) {
     return p
 }
 proto._extendDefaults = function(context, type) {
-    var _outs = {}
+    var _imports = {}
     var self = this
     var defaultPack = self._getDefaultPackage(type)
     if (defaultPack) {
-        _.each(defaultPack.getOuts() || {}, function(key) {
-            if (!self.outs || !self.outs[key]) throw new Error("default package needs "+key+" value from this xpm 'out' param.")
-            _outs[key] = self.outs[key]
+        _.each(defaultPack.getImports() || {}, function(key) {
+            if (!self.imports || !self.imports[key]) throw new Error("default package needs "+key+" value from this xpm 'out' param.")
+            _imports[key] = self.imports[key]
         })
-        util.extend(context, _outs)
+        util.extend(context, _imports)
     }
     if (self._defaultLoaded) { //扩展默认的
         util.extend(context, defaultPack.getExports())
