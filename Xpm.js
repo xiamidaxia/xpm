@@ -35,8 +35,8 @@ function Xpm(config) {
 }
 proto = Xpm.prototype
 proto.use = function(packageName) {
-    this._serverUse(packageName)
     this._clientUse(packageName)
+    return this._serverUse(packageName)
 }
 /**
  * [Server]
@@ -85,9 +85,9 @@ proto._extendDefaults = function(context, type) {
     var self = this
     var defaultPack = self._getDefaultPackage(type)
     if (defaultPack) {
-        _.each(defaultPack.getImports() || {}, function(key) {
-            if (!self.imports || !self.imports[key]) throw new Error("default package needs "+key+" value from this xpm 'out' param.")
-            _imports[key] = self.imports[key]
+        _.each(defaultPack.getImports() || {}, function(name, alias) {
+            if (!self.imports || !self.imports[name]) throw new Error("you must import a value `"+name+"` .")
+            _imports[alias] = self.imports[name]
         })
         util.extend(context, _imports)
     }

@@ -27,11 +27,34 @@ Package.describe({
 
 Package.server({
     require: ['underscore']             //your requires
-    files: ['fil1.js', 'file2.js']
+    files: ['fil1', 'file2']
     exports: ['meteor']
 })
 
 ```
+
+Ok, now you can add the standard packages from [Meteor](https://github.com/meteor/meteor) in the xpm `packages` directory.
+
+```javascript
+var server = require('connect').createServer()
+var xpm = require('xpm')
+
+var mymeteor = xpm.create({
+    cwd: xpm.getMeteorPackageCwd(),
+    default: true,
+    imports: {Meteor: server}
+})
+
+mymeteor.use('random')
+mymeteor.use('deps')
+mymeteor.use('minimongo')
+
+server.listen(3000, function() {
+    console.log("Meteor server listen on 3000.")
+})
+
+```
+
 ##API
 ###xpm
 

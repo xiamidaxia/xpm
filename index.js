@@ -28,3 +28,7 @@ exports.create = function(config) {
 exports.getMiddleware = function(xpmArr, opts) {
 
 }
+
+exports.getMeteorPackageCwd = function() {
+    return __dirname + "/packages"
+}

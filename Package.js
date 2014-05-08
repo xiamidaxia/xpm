@@ -72,6 +72,9 @@ proto._addData = function(data) {
                 break;
             case "files":
                 assertType(item, "Array", "'files' need a Array.")
+                item.forEach(function(filename, index) {
+                    item[index] = filename.split(".js")[0] + ".js" //todo check other file types
+                })
                 self._data[key] = _.union(
                     self._data[key],
                     item
