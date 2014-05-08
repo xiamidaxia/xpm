@@ -13,7 +13,7 @@ var proto
 /**
  * @public
  * @param {Object} config
- * //todo 目前采用同步加载，可以改成异步加载来提高性能
+ * //todo 目前采用同步加载，可以改成Fiber加载来提高性能
  * //todo imports要在创建的时候就检测是否为default
  *      {
  *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
