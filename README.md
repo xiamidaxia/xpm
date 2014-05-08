@@ -37,13 +37,13 @@ Package.server({
 
 this can be used to create a Xpm instance.
 
-- xpm.create({Object} config)
- * cwd {String}
- * check {Boolean | Ignore} check if it is recurse require, you can set to false if it is in production. default true.
- * default {Boolean | Ignore} check if can add the default package, default false.
- * imports {Object | Ignore} this can be imported to the default package opts "imports".
+* xpm.create({Object} config)
+    - cwd {String}
+    - check {Boolean | Ignore} check if it is recurse require, you can set to false if it is in production. default true.
+    - default {Boolean | Ignore} check if can add the default package, default false.
+    - imports {Object | Ignore} this can be imported to the default package opts "imports".
 
-- xpm.getMiddleware({Array} xpmArr, {Object | Ignore} opts)
+* xpm.getMiddleware({Array} xpmArr, {Object | Ignore} opts)
 
 ###Xpm Module
 
@@ -52,15 +52,17 @@ this can be used to create a Xpm instance.
 - Xpm.require({String} packagename)
 
 ###Package Module
+- Package.describe(info)
+ describe your package.
 
 - Package.server(opts)
- use in the server side.
+ use in the server side. see `opts`
 
 - Package.client(opts)
- use in the client side.
+ use in the client side. see `opts`
 
 - Package.all(opts)
- this opts can be used to both the server and client sides, see [opts](#opts)
+ this opts can be used to both the server and client sides, see `opts`
 
 ###opts
 
