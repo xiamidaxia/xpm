@@ -1,3 +1,4 @@
 Package.server({
-    require: ['b']
+    files: ["file1"],
+    exports: ["a", "name"]
 })

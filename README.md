@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.0.1
+v0.0.2
 
 a simple javascript code package manager, can be manage well
 with the client side and server side code, like [Meteor](https://github.com/meteor/meteor) package.
@@ -89,15 +89,17 @@ this can be used to create a Xpm instance.
 
 ###opts
 
-- require({Array | Object})
+- require({Array})
 
 - files({Array})
 
-- exports({Array | Object})
+- exports({Array})
 
-- nrequire({Array | Object})  only in the Package.server()
+- nrequire({Array})  only in the Package.server()
 
-- defaults({Array | Object}) only use in the default Package.js
+- alias({Object})
+
+- defaults({Array}) only use in the default Package.js
 
 - imports({Array | Object}) only use in the default Packge.js
 

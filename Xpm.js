@@ -50,9 +50,8 @@ proto.require = proto._serverUse
  * [client]
  */
 proto._clientUse = function(packageName) {
-    var p = this._addPackage(packageName, "client")
+    //var p = this._addPackage(packageName, "client")
     //todo
-    //p.exec()
 }
 proto._addPackage = function(packageName, type, isDefault) {
     var p, requireArr, self, _map, context
@@ -62,7 +61,7 @@ proto._addPackage = function(packageName, type, isDefault) {
     if (p = _map[packageName]) return p
     p = _map[packageName] = new Package({cwd: this._cwd, name: packageName, type: type, default: isDefault})
     //p.readPackagejs() //读取package.js文件
-    requireArr = p.getRequireArr()
+    requireArr = p.getRequire()
     requireArr.forEach(function(item) {
         self._addPackage(item, type) //add the require package
     })
@@ -71,8 +70,8 @@ proto._addPackage = function(packageName, type, isDefault) {
     //执行
     if (type === "server") {
         self._extendDefaults(context, type)
-        _.each(p.getRequire(), function(name, alias) {
-            context[alias] = self._serverMap[name].getExports()
+        p.getRequire().forEach(function(_packname) {
+            self._serverMap[_packname].exportsToContext(context)
         })
         p.exec(context)
     } else {
@@ -85,14 +84,14 @@ proto._extendDefaults = function(context, type) {
     var self = this
     var defaultPack = self._getDefaultPackage(type)
     if (defaultPack) {
-        _.each(defaultPack.getImports() || {}, function(name, alias) {
+        defaultPack.getImports().forEach(function(name) {
             if (!self.imports || !self.imports[name]) throw new Error("you must import a value `"+name+"` .")
-            _imports[alias] = self.imports[name]
+            _imports[name] = self.imports[name]
         })
         util.extend(context, _imports)
     }
-    if (self._defaultLoaded) { //扩展默认的
-        util.extend(context, defaultPack.getExports())
+    if (self._defaultLoaded) { //默认包已经加载完成则扩展到所有其他包
+        defaultPack.exportsToContext(context)
     }
 
 }
@@ -100,10 +99,10 @@ proto._extendDefaults = function(context, type) {
 proto._setPackageSequencyRequire = function(packageObj, requireArr, type) {
     var result = [], items = {}, self = this
     if (!packageObj.getSequencyRequire()) {
-        _.each(self.getMap(type), function(item, key) {
-            items[key] = {
-                name: key,
-                dep: item.getRequireArr()
+        _.each(self.getMap(type), function(_packObj, _packname) {
+            items[_packname] = {
+                name: _packname,
+                dep: _packObj.getRequire()
             }
         })
         sequency(items, requireArr, result)
@@ -118,7 +117,7 @@ proto._getDefaultPackage = function(type) {
 }
 proto._addDefaultPackage = function() {
     this._addPackage("__default__", "server", true)
-    this._addPackage("__default__", "client", true)
+    //this._addPackage("__default__", "client", true)
     this._defaultLoaded = true
 }
 //proto.get
