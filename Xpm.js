@@ -71,8 +71,8 @@ proto._addPackage = function(packageName, type, isDefault) {
     //执行
     if (type === "server") {
         self._extendDefaults(context, type)
-        _.each(p.getRequire(), function(item) {
-            context[item] = self._serverMap[item].getExports()
+        _.each(p.getRequire(), function(name, alias) {
+            context[alias] = self._serverMap[name].getExports()
         })
         p.exec(context)
     } else {

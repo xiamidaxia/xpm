@@ -4,5 +4,5 @@ Package.describe({
 
 Package.all({
     "files": ['underscore.js'],
-    "exports": ['underscore']
+    //"exports": ['underscore']
 })

@@ -18,7 +18,7 @@ console.log(meteor.version)
 
 ```
 
-In the package like 'meteor', you need to add the file 'package.js' just like this:
+In the package like 'meteor', you need to add the file `package.js` just like this:
 
 ```javascript
 Package.describe({
@@ -33,7 +33,7 @@ Package.server({
 
 ```
 
-Ok, now you can add the standard packages from [Meteor](https://github.com/meteor/meteor) in the xpm `packages` directory.
+Ok, you can add the standard packages from [Meteor](https://github.com/meteor/meteor) in the xpm `packages` directory.
 
 ```javascript
 var server = require('connect').createServer()

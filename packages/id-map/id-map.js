@@ -1,4 +1,4 @@
-IdMap = function (idStringify, idParse) {
+var IdMap = function (idStringify, idParse) {
   var self = this;
   self._map = {};
   self._idStringify = idStringify || JSON.stringify;

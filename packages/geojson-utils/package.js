@@ -4,7 +4,7 @@ Package.describe({
 });
 
 Package.all({
-    files: ["pre", "geojson-utils", "post"],
+    files: ["geojson-utils"],
     exports: ["GeoJSON"]
 })
 

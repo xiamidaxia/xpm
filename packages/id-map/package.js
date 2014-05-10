@@ -6,6 +6,6 @@ Package.describe({
 Package.all({
     "require": ['ejson'],
     "files": ["id-map.js"],
-    "exports": ["IdMap"]
+    "exports": ['IdMap']
 })
 

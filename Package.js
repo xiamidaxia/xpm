@@ -29,6 +29,7 @@ function _Package(config) {
     this._type = config.type
     this._data = {require: {}, exports: {}, files: []}
     this._default = config.default || false //是否为default类包
+    //this.isModule = false todo
     if (config.type === "server") {
         this._exports = {}
         this._data.nrequire = {}
@@ -116,9 +117,16 @@ proto._execServer = function(requireContext) {
             self._exports = _execRet.ret //module返回则直接相等
         }
     })
+    //如果只有一个则直接返回结果
+    if (_.size(self._data.exports) === 1) {
+        //self._exports = requireContext[self._data.exports[]]
+        for (var i in self._data.exports) {
+            return self._exports = requireContext[self._data.exports[i]]
+        }
+    }
     //get exports
-    _.each(self._data.exports, function(item, key) {
-        self._exports[key] = requireContext[item]
+    _.each(self._data.exports, function(name, alias) {
+        self._exports[alias] = requireContext[name]
     })
     return self._exports
 }
