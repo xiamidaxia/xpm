@@ -75,24 +75,16 @@ describe "xpm", ()->
             done()
     describe 'check defaults', ->
         xpm = null
-        it '创建包含default的xpm', (done) ->
+        it '创建default的xpm, 并使用defaults, alias, imports配置', (done) ->
             xpm = new XPM({cwd: __dirname + '/pack2',default: true, imports:{outs1: "this is in outs1."}})
             defaultContext =
                 outs1: 'this is in outs1.',
-                a: 'this is a in file1.',
+                A: 'this is a in file1.',
                 name: 'b',
                 b1: 'this is b in file1.',
                 b2: 'this is b in file2.',
                 d: 'this is d in file1.'
             defaultPack = xpm.getMap("server")["__default__"]
-            defaultPack._data.should.eql(
-                require: [ 'a', 'b' ],
-                exports: [],
-                files: [],
-                alias: {},
-                nrequire: [],
-                imports: [ 'outs1' ]
-            )
             defaultPack.getExports().should.eql(defaultContext)
             defaultPack.exportsToContext({}).should.eql(defaultContext)
             done()
@@ -103,7 +95,7 @@ describe "xpm", ()->
                 name: 'e',
                 b1: 'this is b in file1.',
                 b2: 'this is b in file2.',
-                a: 'this is a in file1.',
+                A: 'this is a in file1.',
                 d: 'this is d in file1.'
                 outs1: "this is in outs1."
             )

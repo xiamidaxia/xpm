@@ -1,19 +1,9 @@
 Package.all({
-    defaults: {
-        "_": "underscore",
-        "Xiami": "meteor"
+    defaults: ["underscore", "meteor"],
+    alias: {
+        "_": "underscore"
     },
-    imports: ["Meteor"]  //you need to add a connect app as a Meteor
-})
-
-Package.server({
-})
-
-Package.client({
-    defaults: {
-        //"$": "jquery",
-        //"supports": "supports"  //support: json es5
-    }
+    imports: ["Meteor"]  //you need to add a connect app as a Meteor key
 })
 
 

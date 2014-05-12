@@ -4,14 +4,9 @@ Package.describe({
 });
 
 Package.server({
-    //require: ["ejson", "id-map", "ordered-dict",'random','deps','geojson-utils'],
-    require: {
-        "EJSON": "ejson",
-        //"IdMap": "id-map"
-    },
+    require: ["ejson", "id-map", "ordered-dict",'random','deps','geojson-utils'],
     files: [
         "minimongo"
-    ],
-    exports: []
+    ]
 })
 

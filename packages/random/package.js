@@ -9,7 +9,8 @@ Package.all({
 })
 
 Package.server({
-    "nrequire": {
+    "nrequire": ['crypto'],
+    alias: {
         nodeCrypto: 'crypto'
     }
 })

@@ -47,8 +47,8 @@ proto = _Package.prototype
 proto._addData = function(data) {
     var self = this
     _.each(data, function(item, key) {
-        if (self._default && !~(["defaults", "imports"].indexOf(key))) {
-            throw new Error("default package only can use 'defaults' and 'imports', key '" + key + "' uncorrect !")
+        if (self._default && !~(["defaults", "imports", "alias", "nrequire"].indexOf(key))) {
+            throw new Error("default package can not use opts key: '" + key + "'!")
         }
         if (key == "nrequire" && self._type !== "server") {
             throw new Error("nrequire only use in the server!")
@@ -61,7 +61,7 @@ proto._addData = function(data) {
             case "require":
             case "exports":
             case "files":
-                assertType(item, "Array", "'" + key + "' need an Array.")
+                assertType(item, "Array", "'" + key + "' need an Array in package " + self._name + ".")
                 if (key === "files")
                     item.forEach(function(filename, index) {
                         item[index] = filename.split(".js")[0] + ".js" //todo check other file types
@@ -72,7 +72,7 @@ proto._addData = function(data) {
                 )
                 break;
             case "alias":
-                assertType(item, "Object", "'" + key + "' need an Object.")
+                assertType(item, "Object", "'" + key + "' need an Object .")
                 _.extend(self._data[key], item)
                 break;
             default:
@@ -95,10 +95,6 @@ proto.exec = function(requireContext) {
 proto._execServer = function(requireContext) {
     var self = this
     requireContext = requireContext || {}
-    //如果是默认包，则返回不执行
-    if (self._default) {
-        return this._exports = requireContext
-    }
     //加入npm包的扩展 todo, 加入npm包版本说明
     this._data.nrequire.forEach(function(item) {
         requireContext[item] = require(item)
@@ -111,6 +107,10 @@ proto._execServer = function(requireContext) {
         requireContext[alias] = requireContext[name]
         delete requireContext[name]
     })
+    //如果是默认包，则返回不执行
+    if (self._default) {
+        return this._exports = requireContext
+    }
     //执行加载的文件
     this._data.files.forEach(function(filename, index, arr) {
         var filepath = path.join(self._cwd, self._name, filename)
@@ -120,10 +120,10 @@ proto._execServer = function(requireContext) {
         } else {
             if (index !== arr.length - 1)
                 throw new Error("module.exports只能用在files数组包含的最后一个文件.")
-            self._exports = _execRet.ret //module返回则直接相等
             if (self._data.exports.length !== 1) {
-                throw new Error("若在执行文件中使用module.exports，请指定exports配置选项为一个。")
+                throw new Error("包 '" + self._name + "' 需要指定exports数组，且数组只能有一个选项。")
             }
+            self._exports = _execRet.ret //module返回则直接相等
             self.isModule = true
         }
     })
@@ -132,12 +132,12 @@ proto._execServer = function(requireContext) {
     if (self._data.exports.length === 1) {
         self.isModule = true
         self._exports = requireContext[self._data.exports[0]]
-        if (!self._exports) throw new Error("包 '"+self._name+"' 的exports扩展 ‘" + self._data.exports[0] + "’ 不存在")
+        if (!self._exports) throw new Error("包 '" + self._name + "' 的exports扩展 ‘" + self._data.exports[0] + "’ 不存在")
     }
     //get exports
     self._data.exports.forEach(function(item) {
         if (!requireContext[item]) {
-            throw new Error("包 '"+self._name+"' 的exports扩展 ‘" + item + "’ 不存在")
+            throw new Error("包 '" + self._name + "' 的exports扩展 ‘" + item + "’ 不存在")
         }
         self._exports[item] = requireContext[item]
     })
