@@ -29,6 +29,7 @@ function _Package(config) {
     this._type = config.type
     this._data = {require: [], exports: [], files: [], alias: {}}
     this._default = config.default || false //是否为default类包
+    this._test = {files: []}
     this.isModule = false  //为true相当于nodejs里的module.exports扩展
     if (config.type === "server") {
         this._exports = {}
@@ -95,9 +96,10 @@ proto.exec = function(requireContext) {
 proto._execServer = function(requireContext) {
     var self = this
     requireContext = requireContext || {}
-    //加入npm包的扩展 todo, 加入npm包版本说明
+    //加入npm包的扩展
+    var nrequire = util.getRequireFn(self.getFilePath("package.js"))
     this._data.nrequire.forEach(function(item) {
-        requireContext[item] = require(item)
+        requireContext[item] = nrequire(item)
     })
     //使用别名
     _.each(this._data.alias, function(name, alias) {
@@ -113,7 +115,7 @@ proto._execServer = function(requireContext) {
     }
     //执行加载的文件
     this._data.files.forEach(function(filename, index, arr) {
-        var filepath = path.join(self._cwd, self._name, filename)
+        var filepath = self.getFilePath(filename)
         var _execRet = util.execFileByContext(filepath, requireContext)
         if (!_execRet.isModule) {
             extend(requireContext, _execRet.ret)
@@ -171,7 +173,7 @@ proto._getFileContent = function() {
         _r = "var " + item + " = " + "__require__(\"" + key + "\");"
     })
     this._data.files.forEach(function(filename) {
-        var filepath = path.join(self._cwd, self._name, filename)
+        var filepath =self.getFilePath(filename)
         fileContent += fs.readFileSync(filepath).toString() + "\n"
     })
     return fileContent = _contentStart + fileContent + _contentEnd
@@ -218,12 +220,15 @@ proto.exportsToContext = function(context) {
  */
 proto.readPackagejs = function() {
     var packagePath
-    if (this._default)
-        packagePath = path.join(this._cwd, "package.js")
-    else
-        packagePath = path.join(this._cwd, this._name, "package.js")
+    packagePath = this.getFilePath("package.js")
     //load Package.js
     util.execFileByContext(packagePath, {Package: this})
+}
+proto.getFilePath = function(filename) {
+    if (!this._default)
+        return path.join(this._cwd, this._name, filename)
+    else
+        return path.join(this._cwd, filename)
 }
 proto.describe = function(info) {
     this._info = info
@@ -247,6 +252,16 @@ proto.client = function(data) {
  */
 proto.all = function(data) {
     this._addData(data)
+}
+
+proto.test = function(opts) {
+    if (opts && opts.files) {
+        assertType(opts.files, "Array")
+        opts.files.forEach(function(filename, index) {
+            opts.files[index] = filename.split(".js")[0] + ".js" //todo check other file types
+        })
+        this._test.files = _.union(this._test.files, opts.files)
+    }
 }
 
 module.exports = _Package

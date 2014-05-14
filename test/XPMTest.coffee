@@ -47,6 +47,11 @@ describe "xpm", ()->
             _d.exec({underscore:"out underscore."})
             _d.getExports().should.eql({ name: 'd', _: 'out underscore.' })
             done()
+        it 'test nrequire', (done) ->
+            e = new Package({cwd:__dirname + "/pack1",name:"e",type:"server"})
+            e.exec()
+            _.isFunction(e.getExports()).should.ok
+            done()
     describe 'Xpm', ->
         xpm = null
         it '创建Xpm', (done) ->

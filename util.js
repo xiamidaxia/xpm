@@ -58,6 +58,7 @@ function extend() {
  *
  * @param {Strig}  文件路径
  * @param {Object} 执行的全局空间
+ * @param {Boolean} 是否有require
  * @param {Function | Ignore} [ {String} fileContent ] 对文件内容进行处理
  * @return {Object}
  *      {
@@ -65,65 +66,63 @@ function extend() {
  *          "ret": {All}
  *      }
  */
-function execFileByContext(filepath, context, fileContentFilter) {
-    var fileContent
-    var _exports = {}
-/*    var _require = function(name) {
-        var ret
-        try {
-            ret = require(path.join(path.dirname(filepath),"node_modules", name))
-        } catch (e) {
-            ret = require(name)
-            return ret
-        }
-        return ret
-    }*/
-    var newContext = extend({
-        console: console,
-        //require: _require,
-        module: {exports: _exports}, //模拟exports
-        exports: {}
-    }, context)
-    var NODE_KEY = ["console", "require", "module", "exports"]
-    //_context = vm.createContext(context)
-    fileContent = fs.readFileSync(filepath).toString()
+function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
+    var _module, sandbox, filecode, _oldExports
+    sandbox = extend({}, context)
+    //filepath = fs.realpathSync(filepath)
+    filecode = fs.readFileSync(filepath).toString()
     if (fileContentFilter) {
-        fileContent = fileContentFilter(fileContent)
+        filecode = fileContentFilter(filecode)
     }
-    vm.runInNewContext(fileContent, newContext, filepath)
-    if (newContext.module.exports !== _exports) { //module.exports被重新定义
+    //sandbox.console = console
+    sandbox.global = global
+    sandbox.console = console
+    sandbox.__filename = filepath
+    sandbox.__dirname = path.dirname(sandbox.__filename);
+    sandbox.module = _module = new (require('module'))(filepath)
+    sandbox.exports = _oldExports = _module.exports
+    _module.filename = sandbox.__filename
+    if (hasRequire) {
+        sandbox.require = getRequireFn(filepath, _module)
+    }
+    vm.runInNewContext(filecode, sandbox, filepath)
+    if (_module.exports !== _oldExports) { //module.exports被重新定义
         //返回module
         return {
             "isModule": true,
-            ret: newContext.module.exports
+            ret: _module.exports
         }
     } else {
-        if (!isObjectEmpty(newContext.exports)) {
-            //exports添加了内容
-            return {
-                "isModule": false,
-                "ret": newContext.exports
-            }
-        } else {
-            //返回添加到全局里的
-            NODE_KEY.forEach(function(item) {
-                delete newContext[item]
-            })
-            return {
-                "isModule": false,
-                "ret": newContext
-            }
+        return {
+            "isModule": false,
+            "ret": _module.exports || {}
         }
     }
 }
-
-function isObjectEmpty(obj) {
-    for (var i in obj) {
-        return false
+/**
+ * @param {String}
+ * @param {Object | Ignore}
+ */
+function getRequireFn(filepath, _module) {
+    var _module, Module, _require
+    Module = require('module')
+    if (!_module) {
+        _module =  new Module(filepath)
     }
-    return true
+    _require = function(path) {
+        return Module._load(path, _module, true)
+    }
+    Object.getOwnPropertyNames(require).forEach(function(item) {
+        if (item !== 'paths') _require[item] = require[item]
+    })
+    _require.paths = _module.paths = Module._nodeModulePaths(filepath);
+    _require.resolve = function(request) {
+        return Module._resolveFilename(request, _module);
+    };
+    return _require
 }
 
 exports.assertType = assertType
 exports.extend = extend
 exports.execFileByContext = execFileByContext
+exports.getRequireFn = getRequireFn

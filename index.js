@@ -32,3 +32,13 @@ exports.getMiddleware = function(xpmArr, opts) {
 exports.getMeteorPackageCwd = function() {
     return __dirname + "/packages"
 }
+/**
+ *
+ * @param xpm
+ * @param packageName || all
+ * @param mochaOpts
+ */
+exports.test = function(xpm, packageName, mochaOpts) {
+    require("./xpmTest")(xpm, packageName, mochaOpts)
+}
+

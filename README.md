@@ -60,13 +60,13 @@ server.listen(3000, function() {
 
 this can be used to create a Xpm instance.
 
-* xpm.create({Object} config)
+* xpm.create({Object} config) : {Xpm}
     - cwd {String}
     - check {Boolean | Ignore} check if it is recurse require, you can set to false if it is in production. default true.
     - default {Boolean | Ignore} check if can add the default package, default false.
     - imports {Object | Ignore} this can be imported to the default package opts "imports".
 
-* xpm.getMiddleware({Array} xpmArr, {Object | Ignore} opts)
+* xpm.getMiddleware({Array} xpmArr, {Object | Ignore} opts) : {Function}
 
 ###Xpm Module
 

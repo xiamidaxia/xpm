@@ -36,16 +36,18 @@ function Xpm(config) {
 proto = Xpm.prototype
 proto.use = function(packageName) {
     this._clientUse(packageName)
-    return this._serverUse(packageName)
+    return this.serverUse(packageName)
 }
 /**
  * [Server]
  * this only use in the server side
  */
-proto._serverUse = function(packageName) {
+proto.serverUse = function(packageName) {
+    return this._addPackage(packageName, "server")
+}
+proto.require = function(packageName) {
     return this._addPackage(packageName, "server").getExports()
 }
-proto.require = proto._serverUse
 /**
  * [client]
  */
