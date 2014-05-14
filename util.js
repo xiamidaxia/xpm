@@ -3,6 +3,8 @@ var inspect = require('util').inspect
 var fs = require('fs')
 var path = require('path')
 var vm = require('vm')
+var coffee = require('coffee-script')
+
 /**
  * @param {All}
  * @param {String}
@@ -66,6 +68,8 @@ function extend() {
  *          "ret": {All}
  *      }
  */
+//this is to register coffee compile to `require` extensition
+coffee.register()
 function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     var _module, sandbox, filecode, _oldExports
     sandbox = extend({}, context)
@@ -84,6 +88,10 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     _module.filename = sandbox.__filename
     if (hasRequire) {
         sandbox.require = getRequireFn(filepath, _module)
+    }
+    //编译coffee
+    if (path.extname(filepath) === ".coffee") {
+        filecode = coffee.compile(filecode, {bare:true,filename:filepath});
     }
     vm.runInNewContext(filecode, sandbox, filepath)
     if (_module.exports !== _oldExports) { //module.exports被重新定义

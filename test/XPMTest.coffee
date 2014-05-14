@@ -52,6 +52,11 @@ describe "xpm", ()->
             e.exec()
             _.isFunction(e.getExports()).should.ok
             done()
+        it 'test coffee files', (done) ->
+            f = new Package({cwd:__dirname + "/pack1",name:"f",type:"server"})
+            f.exec()
+            f.getExports().should.eql 'this is in coffee'
+            done()
     describe 'Xpm', ->
         xpm = null
         it '创建Xpm', (done) ->

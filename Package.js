@@ -65,7 +65,9 @@ proto._addData = function(data) {
                 assertType(item, "Array", "'" + key + "' need an Array in package " + self._name + ".")
                 if (key === "files")
                     item.forEach(function(filename, index) {
-                        item[index] = filename.split(".js")[0] + ".js" //todo check other file types
+                        if (path.extname(filename) === "") {
+                            item[index] = filename + ".js"
+                        }
                     })
                 self._data[key] = _.union(
                     self._data[key],
@@ -258,7 +260,9 @@ proto.test = function(opts) {
     if (opts && opts.files) {
         assertType(opts.files, "Array")
         opts.files.forEach(function(filename, index) {
-            opts.files[index] = filename.split(".js")[0] + ".js" //todo check other file types
+            if (path.extname(filename) === "") {
+                opts.files[index] = filename + ".js"
+            }
         })
         this._test.files = _.union(this._test.files, opts.files)
     }

@@ -16,6 +16,7 @@ var _ = require('underscore')
  */
 function xpmTest(xpm, packageName, mochaOpts) {
     var packs = []
+    //todo add the 'all' test
     packs.push(xpm.use(packageName))
     mochaOpts = _.extend({
         reporter: "spec",

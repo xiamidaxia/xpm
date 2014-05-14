@@ -3,7 +3,6 @@
  *  @author liuwencheng
  *
  *    todo 1. add the gulp stream,
- *    todo 2. add the mocha test
  */
 
 var Xpm = require("./Xpm")
@@ -34,9 +33,17 @@ exports.getMeteorPackageCwd = function() {
 }
 /**
  *
- * @param xpm
- * @param packageName || all
- * @param mochaOpts
+ * @param {Xpm} xpm
+ * @param {String} packageName
+ * @param {Optional String} mochaOpts
+ *   - `ui` name "bdd", "tdd", "exports" etc
+ *   - `reporter` reporter instance, defaults to `mocha.reporters.Dot`
+ *   - `globals` array of accepted globals
+ *   - `timeout` timeout in milliseconds
+ *   - `bail` bail on the first test failure
+ *   - `slow` milliseconds to wait before considering a test slow
+ *   - `ignoreLeaks` ignore global leaks
+ *   - `grep` string or regexp to filter tests with
  */
 exports.test = function(xpm, packageName, mochaOpts) {
     require("./xpmTest")(xpm, packageName, mochaOpts)
