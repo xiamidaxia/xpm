@@ -2,7 +2,7 @@
 // implementing the RFC 4122 v4 UUID. It is no longer documented
 // and will go away.
 // XXX COMPAT WITH 0.5.6
-Meteor.uuid = function() {
+Meteor.uuid = function () {
   var HEX_DIGITS = "0123456789abcdef";
   var s = [];
   for (var i = 0; i < 36; i++) {

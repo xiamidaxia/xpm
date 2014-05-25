@@ -15,7 +15,7 @@ var element = function (key, value, next, prev) {
     prev: prev
   };
 };
-var OrderedDict = function (/* ... */) {
+OrderedDict = function (/* ... */) {
   var self = this;
   self._dict = {};
   self._first = null;

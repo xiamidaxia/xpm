@@ -1,6 +1,6 @@
 Package.describe({
     summary: "Dictionary data structure allowing non-string keys",
-    meteor: true
+    meteor: "0.8.1.3"
 });
 
 Package.all({

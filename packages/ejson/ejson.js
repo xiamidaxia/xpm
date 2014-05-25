@@ -1,4 +1,4 @@
-var EJSON = {};
+EJSON = exports.EJSON = {};
 //EJSONTest = {};
 
 var customTypes = {};
@@ -114,6 +114,8 @@ var builtinConverters = [
     },
     fromJSONValue: function (obj) {
       var typeName = obj.$type;
+      if (!_.has(customTypes, typeName))
+        throw new Error("Custom EJSON type " + typeName + " is not defined");
       var converter = customTypes[typeName];
       return converter(obj.$value);
     }
@@ -391,5 +393,3 @@ EJSON.clone = function (v) {
   });
   return ret;
 };
-
-exports.EJSON = EJSON

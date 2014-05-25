@@ -1,6 +1,6 @@
 Package.describe({
     summary: "Extended and Extensible JSON library",
-    meteor: true
+    meteor: "0.8.1.3"
 });
 
 Package.all({
@@ -8,3 +8,6 @@ Package.all({
     "exports": ["EJSON"]
 })
 
+Package.test({
+    "files": ["test/custom_models_for_tests", "test/base64_test", "test/ejson_test"]
+})

@@ -1,3 +1,7 @@
+Package.describe({
+    summary: "meteor common",
+    meteor: "0.8.1.3"
+});
 Package.server({
     require: ["underscore"],
     nrequire: ["fibers", "fibers/future", "path"],
@@ -25,7 +29,7 @@ Package.client({
 Package.test({
     files: [
         'test/debug_test.coffee',
-        'test/dynamics_test.coffee',
+        'test/dynamics_test.js',
         "test/fiber_helpers_test.js",
         //"test/helpers_test.js"
     ]

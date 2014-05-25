@@ -2,7 +2,7 @@
 // Package docs at http://docs.meteor.com/#deps //
 //////////////////////////////////////////////////
 
-Deps = {};
+var Deps = exports.Deps = {};
 
 // http://docs.meteor.com/#deps_active
 Deps.active = false;
@@ -380,5 +380,3 @@ _assign(Deps, {
     requireFlush();
   }
 });
-
-exports.Deps = Deps

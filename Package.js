@@ -29,19 +29,25 @@ function _Package(config) {
     this._name = config.name
     this._type = config.type
     this._data = {require: [], exports: [], files: [], alias: {}}
-    this._default = config.default || false //是否为default类包
+    this._default = config.default || false
     this._test = {files: []}
-    this.isModule = false  //为true相当于nodejs里的module.exports扩展
+    //为true相当于nodejs里的module.exports扩展
+    this.isModule = false
     if (config.type === "server") {
         this._exports = {}
+        //use to test
+        this._context = null
         this._data.nrequire = []
     } else {
-        this._version = null //版本号, 用于确定包的md5值 todo
+        //版本号, 用于client端确定包的md5值 todo
+        this._version = null
     }
-    if (this._default) {       //为默认包则包含imports属性
+    //为默认包则包含imports属性 todo: remove
+    if (this._default) {
         this._data.imports = []
     }
-    this._sequencyRequire = null //按顺序依赖的数组 {Array}, 该值可用于检测是否循环依赖
+    //按顺序依赖的数组 {Array}, 该值可用于检测是否循环依赖
+    this._sequencyRequire = null
     this.readPackagejs()
 }
 require('util').inherits(_Package, EventEmitter)
@@ -57,7 +63,8 @@ proto._addData = function(data) {
         }
         switch (key) {
             case "defaults":
-                key = "require" //defaults转化为require
+                //defaults转化为require
+                key = "require"
             case "nrequire":
             case "imports":
             case "require":
@@ -98,53 +105,58 @@ proto.exec = function(requireContext) {
  */
 proto._execServer = function(requireContext) {
     var self = this
-    requireContext = requireContext || {}
+    var _context = self._context = _.clone(requireContext || {})
     //加入npm包的扩展
     var nrequire = util.getRequireFn(self.getFilePath("package.js"))
     this._data.nrequire.forEach(function(item) {
-        requireContext[item] = nrequire(item)
+        _context[item] = nrequire(item)
     })
     //使用别名
     _.each(this._data.alias, function(alias, name) {
-        if (!requireContext[name]) {
+        if (!_context[name]) {
             throw new Error("["+self._name+"] unknow alias name: " + name)
         }
-        requireContext[alias] = requireContext[name]
-        delete requireContext[name]
+        _context[alias] = _context[name]
+        delete _context[name]
     })
     //如果是默认包，则返回不执行
     if (self._default) {
-        return this._exports = requireContext
+        return this._exports = _context
     }
     //执行加载的文件
     this._data.files.forEach(function(filename, index, arr) {
         var filepath = self.getFilePath(filename)
-        var _execRet = util.execFileByContext(filepath, requireContext)
+        var _execRet = util.execFileByContext(filepath, _context)
         if (!_execRet.isModule) {
-            extend(requireContext, _execRet.ret)
+            extend(_context, _execRet.ret)
         } else {
             if (index !== arr.length - 1)
                 throw new Error("module.exports只能用在files数组包含的最后一个文件.")
             if (self._data.exports.length !== 1) {
                 throw new Error("包 '" + self._name + "' 需要指定exports数组，且数组只能有一个选项。")
             }
-            self._exports = _execRet.ret //module返回则直接相等
+            //扩展到context
+            _context[self._data.exports[0]] = _execRet.ret
+            //module.exports返回则直接相等
+            self._exports = _execRet.ret
             self.isModule = true
         }
     })
-    if (self.isModule) return self._exports
-    //处理exports数组只有一个选项, 当作类似module.exports处理
+    if (self.isModule) {
+        return self._exports
+    }
+    //处理exports数组只有一个选项情况, 当作类似module.exports处理
     if (self._data.exports.length === 1) {
         self.isModule = true
-        self._exports = requireContext[self._data.exports[0]]
+        self._exports = _context[self._data.exports[0]]
         if (!self._exports) throw new Error("包 '" + self._name + "' 的exports扩展 ‘" + self._data.exports[0] + "’ 不存在")
     }
     //get exports
     self._data.exports.forEach(function(item) {
-        if (!requireContext[item]) {
+        if (!_context[item]) {
             throw new Error("包 '" + self._name + "' 的exports扩展 ‘" + item + "’ 不存在")
         }
-        self._exports[item] = requireContext[item]
+        self._exports[item] = _context[item]
     })
     return self._exports
 }

@@ -1,10 +1,11 @@
 var execFileByContext = require('./util').execFileByContext
 var Mocha = require('Mocha')
 var _ = require('underscore')
-var expect = require('expect.js')
+// http://chaijs.com/api/assert/
+var test = require('chai').assert
 /**
  * @param xpm
- * @param {String} packageName || "all"
+ * @param {Array} packageArr
  * @param mochaOpts
  *   - `ui` name "bdd", "tdd", "exports" etc
  *   - `reporter` reporter instance, defaults to `mocha.reporters.Dot`
@@ -15,10 +16,7 @@ var expect = require('expect.js')
  *   - `ignoreLeaks` ignore global leaks
  *   - `grep` string or regexp to filter tests with
  */
-function xpmTest(xpm, packageName, mochaOpts) {
-    var packs = []
-    //todo add the 'all' test
-    packs.push(xpm.use(packageName))
+function xpmTest(xpm, packageArr, mochaOpts) {
     mochaOpts = _.extend({
         reporter: "spec",
         timeout: 1200,
@@ -27,18 +25,20 @@ function xpmTest(xpm, packageName, mochaOpts) {
 
     var mocha = new Mocha(mochaOpts)
 
-    packs.forEach(function(pack) {
-        //add the expect.js
+    packageArr.forEach(function(packname) {
+        var pack = xpm.use(packname)
         var context = {}
-        //add
-        context.expect = expect
+        //add assert methods
+        context.test = test
         //add the mocha context
         mocha.suite.emit('pre-require', context, null, mocha)
-        //extend defaults
-        xpm._extendDefaults(context, 'server')
         pack._test.files.forEach(function(filename) {
-            pack.exportsToContext(context)
-            execFileByContext(pack.getFilePath(filename), context, true)
+            var testRet
+            //extend package all context on the test files
+            _.extend(context, pack._context)
+            testRet = execFileByContext(pack.getFilePath(filename), context, true)
+            if (testRet.isModule) throw new Error('test file does not use `module.exports`')
+            _.extend(context, testRet.ret)
         })
     })
     mocha.run()

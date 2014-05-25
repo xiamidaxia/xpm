@@ -1,17 +1,16 @@
 var Fiber = require('fibers');
 
-it("fibers - synchronous queue", function (done) {
-    //work inside the Fiber
+it("meteor - fibers - synchronous queue", function(done) {
     Fiber(function() {
         var q = new Meteor._SynchronousQueue;
         var output = [];
-        var pusher = function (n) {
-            return function () {
+        var pusher = function(n) {
+            return function() {
                 output.push(n);
             };
         };
-        var outputIsUpTo = function (n) {
-            expect(output).to.be.eql(_.range(1, n+1));
+        var outputIsUpTo = function(n) {
+            test.deepEqual(output, _.range(1, n + 1));
         };
 
         // Queue a task. It cannot run until we yield.
@@ -22,28 +21,28 @@ it("fibers - synchronous queue", function (done) {
         // back to this outer function. No task can have run yet since the main test
         // fiber still will not have yielded.
         var runTask2Done = false;
-        Fiber(function () {
+        Fiber(function() {
             q.runTask(pusher(2));
             runTask2Done = true;
         }).run();
         outputIsUpTo(0);
-        expect(runTask2Done).to.not.ok();
+        test.isFalse(runTask2Done);
 
         // Queue a third task. Still no outer yields, so still no runs.
-        q.queueTask(function () {
+        q.queueTask(function() {
             output.push(3);
             // This task gets queued once we actually start running functions, which
             // isn't until the runTask(pusher(4)), so it gets queued after Task #4.
             q.queueTask(pusher(5));
         });
         outputIsUpTo(0);
-        expect(runTask2Done).to.not.ok();
+        test.isFalse(runTask2Done);
 
         // Run a task and block for it to be done. All queued tasks up to this one
         // will now be run.
         q.runTask(pusher(4));
         outputIsUpTo(4);
-        expect(runTask2Done).to.ok();
+        test.isTrue(runTask2Done);
 
         // Task #5 is still in the queue. Run another task synchronously.
         q.runTask(pusher(6));
@@ -51,7 +50,7 @@ it("fibers - synchronous queue", function (done) {
 
         // Queue a task that throws. It'll write some debug output, but that's it.
         Meteor._suppress_log(1);
-        q.queueTask(function () {
+        q.queueTask(function() {
             throw new Error("bla");
         });
         // let it run.
@@ -60,11 +59,11 @@ it("fibers - synchronous queue", function (done) {
 
         // Run a task that throws. It should throw from runTask.
         Meteor._suppress_log(1);
-        expect(function () {
-            q.runTask(function () {
+        test.throws(function() {
+            q.runTask(function() {
                 throw new Error("this is thrown");
             });
-        }).to.throwError()
+        });
+        done()
     }).run()
-    done()
 });
