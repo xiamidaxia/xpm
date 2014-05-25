@@ -1,10 +1,13 @@
 Package.describe({
     summary: "Dependency mananger to allow reactive callbacks",
-    meteor: true
+    meteor: "deps"
 });
 
 Package.all({
-    "files": ['deps', 'deprecated'],
+    "files": ['deps'],
     "exports": ["Deps"]
 })
 
+Package.test({
+    "files": ["test.coffee"]
+})

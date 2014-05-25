@@ -1,7 +1,7 @@
 Package.server({
     files: ["file1.js"],
     alias: {
-        "_": "underscore"
+        "underscore": "_"
     },
     exports: ["name", "_"]
 })

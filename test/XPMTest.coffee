@@ -42,7 +42,7 @@ describe "xpm", ()->
             d = new Package({cwd:__dirname + "/pack1",name:"d",type:"server"})
             (()->
                 d.exec()
-            ).should.throw("unknow alias name: underscore")
+            ).should.throw("[d] unknow alias name: underscore")
             _d = new Package({cwd:__dirname + "/pack1",name:"d",type:"server"})
             _d.exec({underscore:"out underscore."})
             _d.getExports().should.eql({ name: 'd', _: 'out underscore.' })

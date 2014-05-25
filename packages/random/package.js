@@ -11,11 +11,6 @@ Package.all({
 Package.server({
     "nrequire": ['crypto'],
     alias: {
-        nodeCrypto: 'crypto'
+        'crypto': "nodeCrypto"
     }
 })
-/*Package.on_test(function(api) {
- api.use('random');
- api.use('tinytest');
- api.add_files('random_tests.js', ['client', 'server']);
- });*/

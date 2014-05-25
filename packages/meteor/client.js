@@ -1,7 +1,6 @@
-module.exports = Meteor = {}
+var Meteor = {}
 
 Meteor.isServer = false
 Meteor.isClient = true
-Meteor.debug = function(msg) {
-    console.log(msg)
-}
+
+exports.Meteor = Meteor

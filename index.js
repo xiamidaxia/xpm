@@ -6,6 +6,8 @@
  */
 
 var Xpm = require("./Xpm")
+var _addedXpms = {} //catch the xpm
+var path = require('path')
 /**
  * @param {Object}
  *      {
@@ -13,8 +15,14 @@ var Xpm = require("./Xpm")
  *          "isCheck": true 是否检测循环依赖，这是一个比较耗时的操作在生产环境可以动态设置为false, 默认true
  *      }
  */
-exports.create = function(config) {
-    return new Xpm(config)
+exports.add = function(config) {
+    var name
+    name = path.basename(config.cwd)
+    if (_addedXpms[name]) {
+        throw new Error("xpm: " + name + " is added.")
+    } else {
+        return _addedXpms[name] = new Xpm(config)
+    }
 }
 /**
  * xpm can be used by middlewares
@@ -27,9 +35,18 @@ exports.create = function(config) {
 exports.getMiddleware = function(xpmArr, opts) {
 
 }
-
+/**
+ *
+ * @returns {string}
+ */
 exports.getMeteorPackageCwd = function() {
     return __dirname + "/packages"
+}
+/**
+ * build all packages to the dist directory
+ */
+exports.build = function() {
+
 }
 /**
  *

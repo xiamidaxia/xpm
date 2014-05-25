@@ -15,18 +15,22 @@ var proto
  * @param {Object} config
  * //todo 目前采用同步加载，可以改成Fiber加载来提高性能
  * //todo imports要在创建的时候就检测是否为default
+ * //todo 加入客户端包管理seajs
+ * //todo 加入客户端代码测试工具 mocha
  *      {
  *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
  *          "check": {Boolean} true 是否检测循环依赖，这是一个比较耗时的操作在生产环境可以动态设置为false, 默认true
  *          "default": {Boolean} false 是否需要调用默认包，默认该值为false
  *          "imports": {Object} this will add to the default imports.
+ *          "dist": {String} dist目录名字
  *      }
  */
 function Xpm(config) {
     if (!config.cwd) throw new Error("create Xpm need parameteor 'cwd'. ")
     if (config.cwd[0] !== "/") throw new Error("create Xpm cwd '" + config.cwd + "' need a real path.")
-    this._cwd = path.join(config.cwd)
+    this._cwd = config.cwd
     this._checkRecurse = config.check === undefined ? true : config.check
+    this._dist = config.dist
     this.imports = config.imports
     this._clientMap = {}
     this._serverMap = {}
@@ -54,6 +58,8 @@ proto.require = function(packageName) {
 proto._clientUse = function(packageName) {
     //var p = this._addPackage(packageName, "client")
     //todo
+}
+proto.load = function(packageName) {
 }
 proto._addPackage = function(packageName, type, isDefault) {
     var p, requireArr, self, _map, context

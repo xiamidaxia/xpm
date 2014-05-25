@@ -1,4 +1,11 @@
+var Meteor = {}
 Meteor.isServer = true
 Meteor.isClient = false
-Meteor.debug = Meteor.debug || function(msg) { console.log(msg);}
-Meteor.app = Meteor.app || Meteor        //a server side app
+Meteor.app = app        //a server side app
+
+
+Meteor.boot = function(fn) {
+    return Fiber(fn).run()
+}
+
+exports.Meteor = Meteor

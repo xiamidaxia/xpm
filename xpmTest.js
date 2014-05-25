@@ -1,6 +1,7 @@
 var execFileByContext = require('./util').execFileByContext
 var Mocha = require('Mocha')
 var _ = require('underscore')
+var expect = require('expect.js')
 /**
  * @param xpm
  * @param {String} packageName || "all"
@@ -21,12 +22,20 @@ function xpmTest(xpm, packageName, mochaOpts) {
     mochaOpts = _.extend({
         reporter: "spec",
         timeout: 1200,
-        bail: true
+        bail: false
     }, mochaOpts)
+
     var mocha = new Mocha(mochaOpts)
+
     packs.forEach(function(pack) {
+        //add the expect.js
         var context = {}
-        mocha.suite.emit('pre-require', context) //add the mocha context
+        //add
+        context.expect = expect
+        //add the mocha context
+        mocha.suite.emit('pre-require', context, null, mocha)
+        //extend defaults
+        xpm._extendDefaults(context, 'server')
         pack._test.files.forEach(function(filename) {
             pack.exportsToContext(context)
             execFileByContext(pack.getFilePath(filename), context, true)
@@ -34,6 +43,7 @@ function xpmTest(xpm, packageName, mochaOpts) {
     })
     mocha.run()
 }
+
 
 module.exports = xpmTest
 

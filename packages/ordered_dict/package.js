@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Ordered traversable dictionary with a mutable ordering",
-  meteor: true
+  meteor: "ordered-dict"
 });
 
 Package.all({

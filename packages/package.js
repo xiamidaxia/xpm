@@ -1,9 +1,9 @@
 Package.all({
     defaults: ["underscore", "meteor"],
     alias: {
-        "_": "underscore"
+        "underscore": "_"
     },
-    imports: ["Meteor"]  //you need to add a connect app as a Meteor key
+    imports: ["app"]  //you need to add a connect app as a Meteor key
 })
 
 

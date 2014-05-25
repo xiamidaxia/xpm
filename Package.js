@@ -11,6 +11,7 @@ var _ = require("underscore")
 var assertType = util.assertType
 var extend = util.extend
 var fs = require('fs')
+var coffee = require('coffee-script')
 
 var proto
 /**
@@ -104,9 +105,9 @@ proto._execServer = function(requireContext) {
         requireContext[item] = nrequire(item)
     })
     //使用别名
-    _.each(this._data.alias, function(name, alias) {
+    _.each(this._data.alias, function(alias, name) {
         if (!requireContext[name]) {
-            throw new Error("unknow alias name: " + name)
+            throw new Error("["+self._name+"] unknow alias name: " + name)
         }
         requireContext[alias] = requireContext[name]
         delete requireContext[name]
@@ -167,16 +168,25 @@ proto._execClient = function() {
  */
 proto._getFileContent = function() {
     var fileContent = ""
-    var _contentStart = "define(function(__require__, exports, module){"
+    var packname = path.basename(this._cwd)
+    var _contentStart = "/** " + packname + "." + this._name + " **/" +
+        "define(function(require, exports, module){\n"
     var _contentEnd = "})"
     var _r
     var self = this
-    _.each(this._data.require, function(item, key) {
-        _r = "var " + item + " = " + "__require__(\"" + key + "\");"
+    //加入外部的require
+    this._data.require.forEach(function(item) {
+        item = self._data.alias[item] || item
+        _r = "var " + item + " = " + "require(\"" + packname + "/" + item + "\");\n"
     })
     this._data.files.forEach(function(filename) {
-        var filepath =self.getFilePath(filename)
-        fileContent += fs.readFileSync(filepath).toString() + "\n"
+        var filepath = self.getFilePath(filename)
+        var filecode = fs.readFileSync(filepath).toString()
+        //编译coffee
+        if (path.extname(filepath) === ".coffee") {
+            filecode = coffee.compile(filecode, {bare: true, filename: filepath});
+        }
+        fileContent += filecode + "\n"
     })
     return fileContent = _contentStart + fileContent + _contentEnd
 }

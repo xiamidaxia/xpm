@@ -4,13 +4,14 @@ var fs = require('fs')
 var path = require('path')
 var vm = require('vm')
 var coffee = require('coffee-script')
+var _ = require('underscore')
 
 /**
  * @param {All}
  * @param {String}
  *        "Array", "Boolean", "Number", "String", "Object",
- *        "Function", "Symbol", "RegExp", "Date", "Error",
- *       "Buffer", "Primitive", "Null", "Undefined"
+ *        "Function", "RegExp", "Date", "Error",
+ *       "Null", "Undefined"
  *
  * @param {String | Ignore} error message
  *
@@ -21,14 +22,14 @@ var coffee = require('coffee-script')
 function assertType(a, typename, errMsg) {
     var _keys = [
         "Array", "Boolean", "Number", "String", "Object",
-        "Function", "Symbol", "RegExp", "Date", "Error",
-        "Buffer", "Primitive", "Null", "Undefined"
+        "Function", "RegExp", "Date", "Error",
+        "Null", "Undefined"
     ]
     var _typename = typename.split(/\s*\|\s*/)
     for (var i = 0, len = _typename.length; i < len; i++) {
         if (!~_keys.indexOf(_typename[i]))
             throw new Error("assertType illegal param typename: " + typename)
-        if (util["is" + _typename[i]](a)) return true
+        if (_["is" + _typename[i]](a)) return true
     }
     if (!errMsg) errMsg = inspect(a) + " need to be '" + typename + "'."
     throw new Error(errMsg)
@@ -68,11 +69,9 @@ function extend() {
  *          "ret": {All}
  *      }
  */
-//this is to register coffee compile to `require` extensition
-coffee.register()
 function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     var _module, sandbox, filecode, _oldExports
-    sandbox = extend({}, context)
+    sandbox = vm.createContext(context)
     //filepath = fs.realpathSync(filepath)
     filecode = fs.readFileSync(filepath).toString()
     if (fileContentFilter) {
@@ -81,6 +80,11 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     //sandbox.console = console
     sandbox.global = global
     sandbox.console = console
+    sandbox.process = process
+    sandbox.setTimeout = setTimeout
+    sandbox.setInterval = setInterval
+    sandbox.clearInterval = clearInterval
+    sandbox.clearTimeout = clearTimeout
     sandbox.__filename = filepath
     sandbox.__dirname = path.dirname(sandbox.__filename);
     sandbox.module = _module = new (require('module'))(filepath)
@@ -93,8 +97,9 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     if (path.extname(filepath) === ".coffee") {
         filecode = coffee.compile(filecode, {bare:true,filename:filepath});
     }
-    vm.runInNewContext(filecode, sandbox, filepath)
-    if (_module.exports !== _oldExports) { //module.exports被重新定义
+    vm.runInContext(filecode, sandbox, filepath)
+    //module.exports是否被重新定义
+    if (_module.exports !== _oldExports) {
         //返回module
         return {
             "isModule": true,
@@ -129,6 +134,9 @@ function getRequireFn(filepath, _module) {
     };
     return _require
 }
+
+//this is to register coffee compiler to `require` extension
+coffee.register()
 
 exports.assertType = assertType
 exports.extend = extend

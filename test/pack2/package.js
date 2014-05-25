@@ -1,7 +1,7 @@
 Package.server({
     "defaults": ["a","b"],
     "alias": {
-        "A": "a"
+        "a": "A"
     },
     "imports": ["outs1"]
 })
