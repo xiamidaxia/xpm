@@ -8,7 +8,7 @@ for (var i = 0; i < BASE_64_CHARS.length; i++) {
   BASE_64_VALS[BASE_64_CHARS.charAt(i)] = i;
 };
 
-base64Encode = function (array) {
+var base64Encode = function (array) {
   var answer = [];
   var a = null;
   var b = null;
@@ -74,7 +74,7 @@ EJSON.newBinary = function (len) {
   return new Uint8Array(new ArrayBuffer(len));
 };
 
-base64Decode = function (str) {
+var base64Decode = function (str) {
   var len = Math.floor((str.length*3)/4);
   if (str.charAt(str.length - 1) == '=') {
     len--;
@@ -122,6 +122,5 @@ base64Decode = function (str) {
   return arr;
 };
 
-EJSONTest.base64Encode = base64Encode;
-
-EJSONTest.base64Decode = base64Decode;
+exports.base64Encode = base64Encode;
+exports.base64Decode = base64Decode;

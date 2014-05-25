@@ -186,3 +186,5 @@ else
 Random.create = function () {
   return new RandomGenerator(arguments);
 };
+
+exports.Random = Random

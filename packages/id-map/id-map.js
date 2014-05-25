@@ -75,3 +75,4 @@ _.extend(IdMap.prototype, {
   }
 });
 
+exports.IdMap = IdMap

@@ -15,7 +15,7 @@ var element = function (key, value, next, prev) {
     prev: prev
   };
 };
-OrderedDict = function (/* ... */) {
+var OrderedDict = function (/* ... */) {
   var self = this;
   self._dict = {};
   self._first = null;
@@ -207,3 +207,5 @@ _.extend(OrderedDict.prototype, {
 
 });
 OrderedDict.BREAK = {"break": true};
+
+module.exports = OrderedDict
