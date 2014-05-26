@@ -1,10 +1,18 @@
 #Xiami Package Manager
 
-v0.0.2
+v0.0.3
 
-a simple javascript code package manager, can be manage well
-with the client side and server side code, like [Meteor](https://github.com/meteor/meteor) package.
+a simple [Meteor](https://github.com/meteor/meteor) package manager, also can be used as a javascript 
+code package manager, and manage the server side and client side code togother.
 
+##what is different from `meteor` packages?
+    - work well with the node modules, can use `npm` immediately.
+    - bind popular 3rd-part tools `mocha` `chai` `coffeescript`, and can easily append others.
+    - bind meteor famous packages like `ejson` `deps` `minimongo` `livedata`, these packages are very very useful I think.
+    - remove meteor ui and meteor template engine `spacebars`, so you can use others like `angularjs`.
+    - a new webapp package can be as a Middleware.
+    - a new client package manager keeping to `commonjs`.
+    
 ##tutorials
 
 ```javascript
@@ -12,23 +20,23 @@ var xpm = require('xpm')
 var pack1 = xpm.create({
                 cwd: __dirname + "/you_pack_dirname"
             })
-var meteor = pack1.require("meteor")
+var mypack1 = pack1.require("mypack1")
 
-console.log(meteor.version)
+console.log(mypack1.version)
 
 ```
 
-In the package like 'meteor', you need to add the file `package.js` just like this:
+In the 'mypack1' package directory, you need to add the file `package.js` just like this:
 
 ```javascript
 Package.describe({
-    info: "this is a meteor package."
+    info: "this is a mypack1 package."
 })
 
 Package.server({
     require: ['underscore']             //your requires
     files: ['fil1', 'file2']
-    exports: ['meteor']
+    exports: ['mymethod', 'version']
 })
 
 ```
@@ -42,7 +50,7 @@ var xpm = require('xpm')
 var mymeteor = xpm.create({
     cwd: xpm.getMeteorPackageCwd(),
     default: true,
-    imports: {Meteor: server}
+    imports: {app: server}
 })
 
 mymeteor.use('random')
