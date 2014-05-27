@@ -3,15 +3,15 @@
 v0.0.3
 
 a simple [Meteor](https://github.com/meteor/meteor) package manager, also can be used as a javascript 
-code package manager, and manage the server side and client side code togother.
+code package manager, and manage the server side and client side code together.
 
 ##what is different from `meteor` packages?
-    - work well with the node modules, can use `npm` immediately.
-    - bind popular 3rd-part tools `mocha` `chai` `coffeescript`, and can easily append others.
-    - bind meteor famous packages like `ejson` `deps` `minimongo` `livedata`, these packages are very very useful I think.
-    - remove meteor ui and meteor template engine `spacebars`, so you can use others like `angularjs`.
-    - a new webapp package can be as a Middleware.
-    - a new client package manager keeping to `commonjs`.
+- work well with the node modules, can use `npm` immediately.
+- bind popular 3rd-part tools `mocha` `chai` `coffeescript`, and can easily append others.
+- bind meteor famous packages like `ejson` `deps` `minimongo` `livedata`, these packages are very very useful I think.
+- remove meteor ui and meteor template engine `spacebars`, so you can use others like `angularjs`.
+- a new webapp package can be as a Middleware.
+- a new client package manager keeping to `commonjs`.
     
 ##tutorials
 
