@@ -3,12 +3,14 @@
 ##notes
     - Some packages are different from the original meteor packages.
 ##todo
-    - meteor : add `defer`
+    - meteor: timers.js ??_currentInvocation
+    - __meteor_runtime_config__ in the url_common
+    - wrapasync test
+    - logging
 ##todo
     - 每一个模块都加入测试
     - livedata
     - webapp
-    
     - 静态文件中间件
     - 去掉sockjs改成直接用websocket
     - 实现nodejs客户端

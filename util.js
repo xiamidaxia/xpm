@@ -72,19 +72,17 @@ function extend() {
 function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     var _module, sandbox, filecode, _oldExports
     sandbox = vm.createContext(context)
-    //filepath = fs.realpathSync(filepath)
-    filecode = fs.readFileSync(filepath).toString()
+    filepath = fs.realpathSync(filepath)
+    filecode = fs.readFileSync(filepath, 'utf8')
+    filecode = stripBOM(filecode)
+    // remove shebang
+    filecode = filecode.replace(/^\#\!.*/, '');
     if (fileContentFilter) {
         filecode = fileContentFilter(filecode)
     }
-    //sandbox.console = console
-    sandbox.global = global
-    sandbox.console = console
-    sandbox.process = process
-    sandbox.setTimeout = setTimeout
-    sandbox.setInterval = setInterval
-    sandbox.clearInterval = clearInterval
-    sandbox.clearTimeout = clearTimeout
+    for (var i in global) {
+        sandbox[i] = global[i]
+    }
     sandbox.__filename = filepath
     sandbox.__dirname = path.dirname(sandbox.__filename);
     sandbox.module = _module = new (require('module'))(filepath)
@@ -92,12 +90,24 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
     _module.filename = sandbox.__filename
     if (hasRequire) {
         sandbox.require = getRequireFn(filepath, _module)
+    } else {
+        sandbox.require = null
     }
     //编译coffee
     if (path.extname(filepath) === ".coffee") {
         filecode = coffee.compile(filecode, {bare:true,filename:filepath});
     }
+    sandbox.global = _.clone(global)
+    //保证在vm里能正确使用 `instanceof`
+//    sandbox.Function = Function
+//    sandbox.Date = Date
+//    sandbox.RegExp = RegExp
+//    sandbox.Object = Object
+//    sandbox.String = String
+//    sandbox.Array = Array
+//    sandbox.Number = Number
     vm.runInContext(filecode, sandbox, filepath)
+    _.extend(global, sandbox.global)
     //module.exports是否被重新定义
     if (_module.exports !== _oldExports) {
         //返回module
@@ -111,6 +121,9 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
             "ret": _module.exports || {}
         }
     }
+}
+function _fixVmInstanceOf(sandbox) {
+
 }
 /**
  * @param {String}
@@ -133,6 +146,16 @@ function getRequireFn(filepath, _module) {
         return Module._resolveFilename(request, _module);
     };
     return _require
+}
+
+function stripBOM(content) {
+    // Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+    // because the buffer-to-string conversion in `fs.readFileSync()`
+    // translates it to FEFF, the UTF-16 BOM.
+    if (content.charCodeAt(0) === 0xFEFF) {
+        content = content.slice(1);
+    }
+    return content;
 }
 
 //this is to register coffee compiler to `require` extension

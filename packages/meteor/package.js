@@ -15,7 +15,11 @@ Package.server({
         "debug",
         "dynamics_nodejs",
         "fiber_helpers",
-        "helpers"
+        "helpers",
+        "setimmediate",
+        "timers",
+        "url_common",
+        "url_server"
     ],
     exports: ["Meteor"]
 })
@@ -29,8 +33,10 @@ Package.client({
 Package.test({
     files: [
         'test/debug_test.coffee',
-        'test/dynamics_test.js',
-        "test/fiber_helpers_test.js",
-        //"test/helpers_test.js"
+        'test/dynamics_test',
+        "test/fiber_helpers_test",
+        "test/helpers_test",
+        "test/timers_tests",
+        "test/url_tests"
     ]
 })

@@ -1,9 +1,8 @@
-var server = require('connect').createServer()
-var xpm = require('../')
+var xpm = require('./index')
 var mymeteor = xpm.add({
     cwd: xpm.getMeteorPackageCwd(),
     default: true,
-    imports: {app: server}
+    imports: {app: {}}
 })
 setTimeout(function() {
     xpm.test(mymeteor, [
@@ -14,7 +13,9 @@ setTimeout(function() {
         "id-map",
         "ordered-dict",
         "random",
-        "minimongo"
+        "minimongo",
+        "routepolicy"
+        //"logging"
     ])
 }, 1000)
 

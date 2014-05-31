@@ -27,14 +27,11 @@ it("ejson - keyOrderSensitive", function(done) {
     done()
 });
 
-it.skip("ejson - nesting and literal", function(done) {
+it("ejson - nesting and literal", function(done) {
     var d = new Date;
     var obj = {$date: d};
     var eObj = EJSON.toJSONValue(obj);
     var roundTrip = EJSON.fromJSONValue(eObj);
-    console.log(obj)
-    console.log(eObj)
-    console.log(roundTrip)
     test.deepEqual(obj, roundTrip);
     done()
 });
@@ -195,9 +192,16 @@ it("ejson - parse", function(done) {
     done()
 });
 
-it.skip("ejson - custom types", function(done) {
+it("ejson - custom types", function(done) {
     var testSameConstructors = function(obj, compareWith) {
-        test.equal(obj.constructor, compareWith.constructor);
+        //使用vm.runInNewContext将使得constructor和instanceof无法正常使用
+        //so, 这里不测试基本类型的constructor
+        if (
+            obj.constructor === EJSONTest.Address ||
+            obj.constructor === EJSONTest.Holder ||
+            obj.constructor === EJSONTest.Person) {
+            test.equal(obj.constructor, compareWith.constructor);
+        }
         if (typeof obj === 'object') {
             _.each(obj, function(value, key) {
                 testSameConstructors(value, compareWith[key]);
@@ -219,14 +223,14 @@ it.skip("ejson - custom types", function(done) {
     }
 
     var a = new EJSONTest.Address('Montreal', 'Quebec');
-    testCustomObject({address: a});
+    testCustomObject(new Object({address: a}));
     // Test that difference is detected even if they
     // have similar toJSONValue results:
     var nakedA = {city: 'Montreal', state: 'Quebec'};
     test.notEqual(nakedA, a);
     test.notEqual(a, nakedA);
     var holder = new EJSONTest.Holder(nakedA);
-    test.equal(holder.toJSONValue(), a.toJSONValue()); // sanity check
+    test.deepEqual(holder.toJSONValue(), a.toJSONValue()); // sanity check
     test.notEqual(holder, a);
     test.notEqual(a, holder);
 
