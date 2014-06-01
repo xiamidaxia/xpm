@@ -38,7 +38,7 @@ Log._intercepted = function() {
 // When this is set to 'colored-text', call 'Log.format' before printing.
 // This should be used for logging from within satellite, since there is no
 // other process that will be reading its standard output.
-Log.outputFormat = 'json';
+Log.outputFormat = 'colored-text';
 
 var LEVEL_COLORS = {
     debug: 'green',
@@ -151,8 +151,8 @@ _.each(['debug', 'info', 'warn', 'error'], function(level) {
         obj.level = level;
 
         // XXX allow you to enable 'debug', probably per-package
-        if (level === 'debug')
-            return;
+        //if (level === 'debug')
+        //    return;
 
         if (intercepted) {
             interceptedLines.push(EJSON.stringify(obj));
@@ -258,7 +258,7 @@ Log.format = function(obj, options) {
 
     var prettify = function(line, color) {
         return (options.color && Meteor.isServer && color) ?
-            cliColor[color](line) : line;
+            require('cli-color')[color](line) : line;
     };
 
     return prettify(metaPrefix, META_COLOR)

@@ -4,10 +4,6 @@ Package.describe({
 })
 
 Package.all({
-    "nrequire": ["cli-color"],
-    "alias": {
-        "cli-color": "cliColor"
-    },
     "require": ["ejson"],
     "files": ["logging"],
     "exports": ["Log"]
