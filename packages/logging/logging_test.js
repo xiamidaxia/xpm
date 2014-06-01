@@ -13,7 +13,7 @@ it("logging - _getCallerDetails", function(done) {
     done()
 });
 
-it.skip("logging - log", function(done) {
+it("logging - log", function(done) {
     var logBothMessageAndObject = function(log, level) {
         Log._intercept(3);
 
@@ -31,7 +31,7 @@ it.skip("logging - log", function(done) {
         test.instanceOf(obj1.time, Date);
 
         var obj2 = EJSON.parse(intercepted[1]);
-        test.isFalse(obj2.message);
+        test.isUndefined(obj2.message);
         test.equal(obj2.property1, "foo");
         test.equal(obj2.property2, "bar");
         test.equal(obj2.level, level);
@@ -43,6 +43,7 @@ it.skip("logging - log", function(done) {
         test.equal(obj3.property2, "bar");
         test.equal(obj3.level, level);
         test.instanceOf(obj3.time, Date);
+
         // Test logging falsy values, as well as single digits
         // and some other non-stringy things
         // In a format of testcase, expected result, name of the test.
@@ -79,11 +80,11 @@ it.skip("logging - log", function(done) {
                     expected.toString() === "Invalid Date"))
                 return;
 
-            if (_.isDate(testcase[0]))
-                obj.message = new Date(obj.message);
+            if (_.isDate(testcase[0])) {
+                expected = expected.toString()
+            }
             test.equal(obj.message, expected, 'Logging ' + testName);
         });
-
         // Tests for correct exceptions
         Log._intercept(6);
 
@@ -129,7 +130,7 @@ it("logging - parse", function(done) {
     test.equal(Log.parse("message"), null);
     test.equal(Log.parse('{"foo": "bar"}'), null);
     var time = new Date;
-    test.equal(Log.parse('{"foo": "bar", "time": ' + EJSON.stringify(time) + '}'),
+    test.deepEqual(Log.parse('{"foo": "bar", "time": ' + EJSON.stringify(time) + '}'),
         { foo: "bar", time: time });
     test.equal(Log.parse('{"foo": not json "bar"}'), null);
     test.equal(Log.parse('{"time": "not a date object"}'), null);
