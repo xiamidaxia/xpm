@@ -1,4 +1,4 @@
-it("absolute-url - basics", function(done) {
+it("meteor - absolute-url - basics", function(done) {
 
     _.each(['', 'http://'], function(prefix) {
 
@@ -63,7 +63,7 @@ it("absolute-url - basics", function(done) {
     done()
 });
 
-it.skip("absolute-url - environment", function(done) {
+it.skip("meteor - absolute-url - environment", function(done) {
     // make sure our test runner set the runtime configuration, and this
     // propagates to the client.
     test.isTrue(/^http/.test(__meteor_runtime_config__.ROOT_URL));

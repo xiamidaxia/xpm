@@ -29,7 +29,7 @@ Minimongo.Sorter = function (spec, options) {
     });
   };
 
-  if (spec instanceof Array) {
+  if (_.isArray(spec)) {
     for (var i = 0; i < spec.length; i++) {
       if (typeof spec[i] === "string") {
         addSpecPart(spec[i], true);
@@ -317,7 +317,7 @@ _.extend(Minimongo.Sorter.prototype, {
 
     // If the user just passed a literal function to find(), then we can't get a
     // key filter from it.
-    if (selector instanceof Function)
+    if (_.isFunction(selector))
       return;
 
     var constraintsByPath = {};
@@ -336,7 +336,7 @@ _.extend(Minimongo.Sorter.prototype, {
       // regexp match" but "does the value fall into a range named by the
       // literal prefix of the regexp", ie "foo" in /^foo(bar|baz)+/  But
       // "does the regexp match" is a good approximation.
-      if (subSelector instanceof RegExp) {
+      if (_.isRegExp(subSelector)) {
         // As far as we can tell, using either of the options that both we and
         // MongoDB support ('i' and 'm') disables use of the key filter. This
         // makes sense: MongoDB mostly appears to be calculating ranges of an

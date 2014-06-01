@@ -2,14 +2,14 @@ var asyncFunction1 = function(x, cb) {
     setTimeout(function() { cb(null, x); }, 5);
 };
 var asyncFunction2 = function(x, opt, cb) {
-    if (!cb && opt instanceof Function) {
+    if (!cb && _.isFunction(opt)) {
         cb = opt;
         opt = null;
     }
     asyncFunction1(x, cb);
 };
 var asyncFunction3 = function(opt, cb) {
-    if (!cb && opt instanceof Function) {
+    if (!cb && _.isFunction(opt)) {
         cb = opt;
         opt = null;
     }

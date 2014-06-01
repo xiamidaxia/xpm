@@ -113,7 +113,7 @@ var findModTarget = function (doc, keyparts, options) {
       e.setPropertyError = true;
       throw e;
     }
-    if (doc instanceof Array) {
+    if (_.isArray(doc)) {
       if (options.forbidArray)
         return null;
       if (keypart === '$') {
@@ -205,7 +205,7 @@ var MODIFIERS = {
   },
   $unset: function (target, field, arg) {
     if (target !== undefined) {
-      if (target instanceof Array) {
+      if (_.isArray(target)) {
         if (field in target)
           target[field] = null;
       } else
@@ -215,7 +215,7 @@ var MODIFIERS = {
   $push: function (target, field, arg) {
     if (target[field] === undefined)
       target[field] = [];
-    if (!(target[field] instanceof Array))
+    if (!_.isArray(target[field]))
       throw MinimongoError("Cannot apply $push modifier to non-array");
 
     if (!(arg && arg.$each)) {
@@ -226,7 +226,7 @@ var MODIFIERS = {
 
     // Fancy mode: $each (and maybe $slice and $sort)
     var toPush = arg.$each;
-    if (!(toPush instanceof Array))
+    if (!_.isArray(toPush))
       throw MinimongoError("$each must be an array");
 
     // Parse $slice.
@@ -275,12 +275,12 @@ var MODIFIERS = {
     }
   },
   $pushAll: function (target, field, arg) {
-    if (!(typeof arg === "object" && arg instanceof Array))
+    if (!(typeof arg === "object" && _.isArray(arg)))
       throw MinimongoError("Modifier $pushAll/pullAll allowed for arrays only");
     var x = target[field];
     if (x === undefined)
       target[field] = arg;
-    else if (!(x instanceof Array))
+    else if (!_.isArray(x))
       throw MinimongoError("Cannot apply $pushAll modifier to non-array");
     else {
       for (var i = 0; i < arg.length; i++)
@@ -291,7 +291,7 @@ var MODIFIERS = {
     var x = target[field];
     if (x === undefined)
       target[field] = [arg];
-    else if (!(x instanceof Array))
+    else if (!_.isArray(x))
       throw MinimongoError("Cannot apply $addToSet modifier to non-array");
     else {
       var isEach = false;
@@ -317,7 +317,7 @@ var MODIFIERS = {
     var x = target[field];
     if (x === undefined)
       return;
-    else if (!(x instanceof Array))
+    else if (!_.isArray(x))
       throw MinimongoError("Cannot apply $pop modifier to non-array");
     else {
       if (typeof arg === 'number' && arg < 0)
@@ -332,11 +332,11 @@ var MODIFIERS = {
     var x = target[field];
     if (x === undefined)
       return;
-    else if (!(x instanceof Array))
+    else if (!_.isArray(x))
       throw MinimongoError("Cannot apply $pull/pullAll modifier to non-array");
     else {
       var out = [];
-      if (typeof arg === "object" && !(arg instanceof Array)) {
+      if (typeof arg === "object" && !(_.isArray(arg))) {
         // XXX would be much nicer to compile this once, rather than
         // for each document we modify.. but usually we're not
         // modifying that many documents, so we'll let it slide for
@@ -359,14 +359,14 @@ var MODIFIERS = {
     }
   },
   $pullAll: function (target, field, arg) {
-    if (!(typeof arg === "object" && arg instanceof Array))
+    if (!(typeof arg === "object" && _.isArray(arg)))
       throw MinimongoError("Modifier $pushAll/pullAll allowed for arrays only");
     if (target === undefined)
       return;
     var x = target[field];
     if (x === undefined)
       return;
-    else if (!(x instanceof Array))
+    else if (!(_.isArray(x)))
       throw MinimongoError("Cannot apply $pull/pullAll modifier to non-array");
     else {
       var out = [];

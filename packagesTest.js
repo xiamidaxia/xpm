@@ -14,8 +14,8 @@ setTimeout(function() {
         "ordered-dict",
         "random",
         "minimongo",
-        "routepolicy"
-        //"logging"
+        "routepolicy",
+        "logging"
     ])
 }, 1000)
 

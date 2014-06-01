@@ -65,7 +65,7 @@ _.extend(Minimongo.Matcher.prototype, {
   _compileSelector: function (selector) {
     var self = this;
     // you can pass a literal function instead of a selector
-    if (selector instanceof Function) {
+    if (_.isFunction(selector)) {
       self._isSimple = false;
       self._selector = selector;
       self._recordPathUsed('');
@@ -153,7 +153,7 @@ var compileDocumentSelector = function (docSelector, matcher, options) {
 // indicate equality).  Returns a branched matcher: a function mapping
 // [branched value]->result object.
 var compileValueSelector = function (valueSelector, matcher, isRoot) {
-  if (valueSelector instanceof RegExp) {
+  if (_.isRegExp(valueSelector)) {
     matcher._isSimple = false;
     return convertElementMatcherToBranchedMatcher(
       regexpElementMatcher(valueSelector));
@@ -206,7 +206,7 @@ var convertElementMatcherToBranchedMatcher = function (
 // Takes a RegExp object and returns an element matcher.
 regexpElementMatcher = function (regexp) {
   return function (value) {
-    if (value instanceof RegExp) {
+    if (_.isRegExp(value)) {
       // Comparing two regexps means seeing if the regexps are identical
       // (really!). Underscore knows how.
       return _.isEqual(value, regexp);
@@ -333,7 +333,7 @@ var LOGICAL_OPERATORS = {
     // Record that *any* path may be used.
     matcher._recordPathUsed('');
     matcher._hasWhere = true;
-    if (!(selectorValue instanceof Function)) {
+    if (!_.isFunction(selectorValue)) {
       // XXX MongoDB seems to have more complex logic to decide where or or not
       // to add "return"; not sure exactly what it is.
       selectorValue = Function("obj", "return " + selectorValue);
@@ -588,7 +588,7 @@ ELEMENT_OPERATORS = {
 
       var elementMatchers = [];
       _.each(operand, function (option) {
-        if (option instanceof RegExp)
+        if (_.isRegExp(option))
           elementMatchers.push(regexpElementMatcher(option));
         else if (isOperatorObject(option))
           throw Error("cannot nest $ under $in");
@@ -641,7 +641,7 @@ ELEMENT_OPERATORS = {
   },
   $regex: {
     compileElementSelector: function (operand, valueSelector) {
-      if (!(typeof operand === 'string' || operand instanceof RegExp))
+      if (!(typeof operand === 'string' || _.isRegExp(operand)))
         throw Error("$regex has to be a string or RegExp");
 
       var regexp;
@@ -656,9 +656,9 @@ ELEMENT_OPERATORS = {
         if (/[^gim]/.test(valueSelector.$options))
           throw new Error("Only the i, m, and g regexp options are supported");
 
-        var regexSource = operand instanceof RegExp ? operand.source : operand;
+        var regexSource = _.isRegExp(operand) ? operand.source : operand;
         regexp = new RegExp(regexSource, valueSelector.$options);
-      } else if (operand instanceof RegExp) {
+      } else if (_.isRegExp(operand)) {
         regexp = operand;
       } else {
         regexp = new RegExp(operand);
@@ -966,12 +966,12 @@ LocalCollection._f = {
       return 4;
     if (v === null)
       return 10;
-    if (v instanceof RegExp)
+    if (_.isRegExp(v))
       // note that typeof(/x/) === "object"
       return 11;
     if (typeof v === "function")
       return 13;
-    if (v instanceof Date)
+    if (_.isDate(v))
       return 9;
     if (EJSON.isBinary(v))
       return 5;

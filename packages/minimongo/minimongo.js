@@ -645,7 +645,7 @@ LocalCollection.prototype.remove = function (selector, callback) {
 // we rollback the whole operation, or what?
 LocalCollection.prototype.update = function (selector, mod, options, callback) {
   var self = this;
-  if (! callback && options instanceof Function) {
+  if (! callback && _.isFunction(options)) {
     callback = options;
     options = null;
   }

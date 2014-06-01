@@ -95,7 +95,7 @@ _.extend(Meteor, {
       // If we have any left and the last one is a function, then that's our
       // callback; otherwise, we don't have one.
       if (newArgs.length > 0 &&
-          newArgs[newArgs.length - 1] instanceof Function) {
+          _.isFunction(newArgs[newArgs.length - 1])) {
         callback = newArgs.pop();
       } else {
         if (Meteor.isClient) {

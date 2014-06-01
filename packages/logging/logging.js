@@ -178,7 +178,7 @@ Log.parse = function (line) {
   }
 
   // XXX should probably check fields other than 'time'
-  if (obj && obj.time && (obj.time instanceof Date))
+  if (obj && obj.time && (_.isDate(obj.time)))
     return obj;
   else
     return null;
@@ -190,7 +190,7 @@ Log.format = function (obj, options) {
   options = options || {};
 
   var time = obj.time;
-  if (!(time instanceof Date))
+  if (!(_.isDate(time)))
     throw new Error("'time' must be a Date object");
   var timeInexact = obj.timeInexact;
 

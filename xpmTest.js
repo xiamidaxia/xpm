@@ -3,6 +3,41 @@ var Mocha = require('Mocha')
 var _ = require('underscore')
 // http://chaijs.com/api/assert/
 var test = require('chai').assert
+
+/**
+ * fix test instanceof in vm
+ */
+function _fixTestInstanceOf() {
+    var oldInstanceOf = test.instanceOf
+    var oldNotInstanceOf = test.notInstanceOf
+    var simpleTypes = ["Array",
+        "Boolean", "Number", "String", "Object",
+        "Function", "RegExp", "Date", "Error"]
+    test.instanceOf = function(a, Klass, msg) {
+        var index = simpleTypes.indexOf(Klass.name)
+        if (index !== -1) {
+            if (!_["is" + simpleTypes[index]](a)) {
+                if (msg) throw new Error(msg)
+                throw new Error("AssertionError: " + a + " to be an instance of " + Klass.name)
+            }
+        } else {
+            oldInstanceOf.apply(test, arguments)
+        }
+    }
+    test.notInstanceOf = function(a, Klass, msg) {
+        var index = simpleTypes.indexOf(Klass.name)
+        if (index !== -1) {
+            if (_["is" + simpleTypes[index]](a)) {
+                if (msg) throw new Error(msg)
+                throw new Error("AssertionError: " + a + " to not be an instance of " + Klass.name)
+            }
+        } else {
+            oldNotInstanceOf.apply(test, arguments)
+        }
+    }
+}
+_fixTestInstanceOf()
+
 /**
  * @param xpm
  * @param {Array} packageArr

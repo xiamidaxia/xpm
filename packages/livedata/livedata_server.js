@@ -562,7 +562,7 @@ _.extend(Session.prototype, {
       // reject malformed messages
       if (typeof (msg.id) !== "string" ||
           typeof (msg.name) !== "string" ||
-          (('params' in msg) && !(msg.params instanceof Array))) {
+          (('params' in msg) && !(_.isArray(msg.params)))) {
         self.sendError("Malformed subscription", msg);
         return;
       }
@@ -599,7 +599,7 @@ _.extend(Session.prototype, {
       // for forwards compatibility.
       if (typeof (msg.id) !== "string" ||
           typeof (msg.method) !== "string" ||
-          (('params' in msg) && !(msg.params instanceof Array)) ||
+          (('params' in msg) && !(_.isArray(msg.params))) ||
           (('randomSeed' in msg) && (typeof msg.randomSeed !== "string"))) {
         self.sendError("Malformed method invocation", msg);
         return;
