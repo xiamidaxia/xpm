@@ -119,7 +119,7 @@ proto._execServer = function(requireContext) {
         _context[alias] = _context[name]
         delete _context[name]
     })
-    //如果是默认包，则返回不执行
+    //如果是默认包，则直接使用context
     if (self._default) {
         return this._exports = _context
     }
@@ -278,6 +278,9 @@ proto.all = function(data) {
     this._addData(data)
 }
 
+/**
+ * @public
+ */
 proto.test = function(opts) {
     if (opts && opts.files) {
         assertType(opts.files, "Array")

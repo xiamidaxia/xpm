@@ -98,14 +98,6 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
         filecode = coffee.compile(filecode, {bare:true,filename:filepath});
     }
     sandbox.global = _.clone(global)
-    //保证在vm里能正确使用 `instanceof`
-//    sandbox.Function = Function
-//    sandbox.Date = Date
-//    sandbox.RegExp = RegExp
-//    sandbox.Object = Object
-//    sandbox.String = String
-//    sandbox.Array = Array
-//    sandbox.Number = Number
     vm.runInContext(filecode, sandbox, filepath)
     _.extend(global, sandbox.global)
     //module.exports是否被重新定义
@@ -121,9 +113,6 @@ function execFileByContext(filepath, context, hasRequire, fileContentFilter) {
             "ret": _module.exports || {}
         }
     }
-}
-function _fixVmInstanceOf(sandbox) {
-
 }
 /**
  * @param {String}
