@@ -126,7 +126,7 @@ proto._execServer = function(requireContext) {
     //执行加载的文件
     this._data.files.forEach(function(filename, index, arr) {
         var filepath = self.getFilePath(filename)
-        var _execRet = util.execFileByContext(filepath, _context)
+        var _execRet = util.execFileByContext(filepath, _context, true)
         if (!_execRet.isModule) {
             extend(_context, _execRet.ret)
         } else {
@@ -246,7 +246,7 @@ proto.readPackagejs = function() {
     var packagePath
     packagePath = this.getFilePath("package.js")
     //load Package.js
-    util.execFileByContext(packagePath, {Package: this})
+    util.execFileByContext(packagePath, {Package: this}, true)
 }
 proto.getFilePath = function(filename) {
     if (!this._default)
