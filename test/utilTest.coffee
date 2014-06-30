@@ -1,5 +1,5 @@
 should = require "should"
-util = require "../util"
+util = require "../lib/util"
 
 describe "xpm - util", ->
     it "xpm - util - extend", (done) ->
@@ -28,5 +28,8 @@ describe "xpm - util", ->
         should(global.newGlobalVal).eql(444)
         should(sandbox).eql({_out1:333, _out2:{obj:444}, _out3: d})
         should(ret.testDate).eql(true)
+        should(ret.testObject).eql(true)
+        should(ret.testArray).eql(true)
+        should(ret.testRegExp).eql(true)
         should(ret.dateObj).instanceOf(Date)
         done()

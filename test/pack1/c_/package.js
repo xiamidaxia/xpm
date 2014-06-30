@@ -1,4 +1,4 @@
 Package.all({
-    files: ["file1"],
+    files: ["*.js"],
     exports: ["name2", "name1"]
 })

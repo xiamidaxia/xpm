@@ -1,37 +1,37 @@
 should = require 'should'
-Package = require '../Package'
-XPM = require '../XPM'
+Package = require '../lib/Package'
+XpmServer = require '../lib/xpm_server'
+XpmClient = require '../lib/xpm_client'
 inspect = require('util').inspect
 _ = require 'underscore'
 
 describe "xpm", ()->
     describe 'xpm - Package', (done) ->
-        #nrequire use
         a = null; b = null; _b = null
-        it 'xpm - package.exec -> exports扩展', (done) ->
-            a = new Package({cwd:__dirname + "/pack1",name:"a",type:"server"})
-            a.exec()
+        it 'xpm - package -> exports扩展', (done) ->
+            a = new Package({path:__dirname + "/pack1/a", type:"server"})
+            a.execServer()
             a.getExports().should.eql({ INFO: 'this is a in file2.', NAME:'a'})
             done()
-        it 'xpm - package.exec -> module.exports扩展', (done) ->
-            b = new Package({cwd:__dirname + "/pack1",name:"b",type:"server"})
-            b.exec()
+        it 'xpm - package -> module.exports扩展', (done) ->
+            b = new Package({path:__dirname + "/pack1/b",type:"server"})
+            b.execServer()
             b.getExports().should.eql("b module exports info")
             done()
-        it 'xpm - package.exec -> exports数组只有一个选项的扩展', (done) ->
-            _b = new Package({cwd:__dirname + "/pack1",name:"b_",type:"server"})
-            _b.exec()
+        it 'xpm - package.execServer -> exports数组只有一个选项的扩展', (done) ->
+            _b = new Package({path:__dirname + "/pack1/b_", type:"server"})
+            _b.execServer()
             _b.getExports().should.eql("b file2 info")
             done()
-        it 'xpm - package.exec -> exports不存在的选项', (done) ->
-            c = new Package({cwd:__dirname + "/pack1",name:"c",type:"server"})
-            _c = new Package({cwd:__dirname + "/pack1",name:"c_",type:"server"})
+        it 'xpm - package.execServer -> exports不存在的选项', (done) ->
+            c = new Package({path:__dirname + "/pack1/c",type:"server"})
+            _c = new Package({path:__dirname + "/pack1/c_",type:"server"})
             (()->
-                c.exec()
-            ).should.throw("包 'c' 的exports扩展 ‘unknowname1’ 不存在")
+                c.execServer()
+            ).should.throw("[pack1/c] exports扩展 ‘unknowname1’ 不存在")
             (()->
-                _c.exec()
-            ).should.throw("包 'c_' 的exports扩展 ‘name2’ 不存在")
+                _c.execServer()
+            ).should.throw("[pack1/c_] exports扩展 ‘name2’ 不存在")
             done()
         it 'xpm - package.exportsToContext', (done) ->
             a.exportsToContext({}).should.eql({ INFO: 'this is a in file2.', NAME: 'a' })
@@ -39,77 +39,60 @@ describe "xpm", ()->
             _b.exportsToContext({}).should.eql({_bfile2: "b file2 info"})
             done()
         it 'xpm - package alias', (done) ->
-            d = new Package({cwd:__dirname + "/pack1",name:"d",type:"server"})
+            d = new Package({path:__dirname + "/pack1/d",type:"server"})
             (()->
-                d.exec()
-            ).should.throw("[d] unknow alias name: underscore")
-            _d = new Package({cwd:__dirname + "/pack1",name:"d",type:"server"})
-            _d.exec({underscore:"out underscore."})
+                d.execServer()
+            ).should.throw("[pack1/d] exports扩展 ‘_’ 不存在")
+            _d = new Package({path:__dirname + "/pack1/d",type:"server"})
+            _d.execServer({underscore:"out underscore."})
             _d.getExports().should.eql({ name: 'd', _: 'out underscore.' })
             done()
-        it 'xpm - package nrequire', (done) ->
-            e = new Package({cwd:__dirname + "/pack1",name:"e",type:"server"})
-            e.exec()
-            _.isFunction(e.getExports()).should.ok
-            done()
         it 'xpm - package - coffee files', (done) ->
-            f = new Package({cwd:__dirname + "/pack1",name:"f",type:"server"})
-            f.exec()
+            f = new Package({path:__dirname + "/pack1/f",type:"server"})
+            f.execServer()
             f.getExports().should.eql 'this is in coffee'
             done()
-    describe 'xpm - Xpm', ->
+    describe 'xpm - XpmServer', ->
         xpm = null
         it 'xpm - 创建Xpm', (done) ->
-            xpm = new XPM({cwd: __dirname + "/pack2"})
+            xpm = new XpmServer({cwd: __dirname})
             done()
         it 'xpm - Xpm.require', (done) ->
-            c = xpm.require("c")
+            c = xpm.require("pack2/c")
             c.should.eql(
                 name: 'c',
                 c: 'this is c in file1.',
-                a: 'this is a in file1.',
+                A: 'this is a in file1.',
                 b1: 'this is b in file1.',
                 b2: 'this is b in file2.'
                 d: 'this is d in file1.'
             )
             done()
         it 'xpm - XPM包的依赖顺序正确', (done) ->
-            xpm.require("c")
-            xpm.getMap("server")['c'].getSequencyRequire().should.eql(['a','d', 'b'])
+            p = xpm.use('pack2/c')
+            xpm._checkPackageSequency(p, p._data.require).should.eql([ 'pack2/a', 'pack2/d', 'pack2/b' ])
             done()
         it 'xpm - 测试循环依赖是否报错', (done) ->
-            xpm2 = new XPM({cwd: __dirname + '/pack3'})
+            xpm2 = new XpmServer({cwd: __dirname})
             (->
-                xpm2.require('a')
+                xpm2.require('pack3/a')
             ).should.be.throw()
             done()
-    describe 'xpm - check defaults', ->
-        xpm = null
-        it 'xpm - 创建default的xpm, 并使用defaults, alias, imports配置', (done) ->
-            xpm = new XPM({cwd: __dirname + '/pack2',default: true, imports:{outs1: "this is in outs1."}})
-            defaultContext =
-                outs1: 'this is in outs1.',
-                A: 'this is a in file1.',
-                name: 'b',
-                b1: 'this is b in file1.',
-                b2: 'this is b in file2.',
-                d: 'this is d in file1.'
-            defaultPack = xpm.getMap("server")["__default__"]
-            defaultPack.getExports().should.eql(defaultContext)
-            defaultPack.exportsToContext({}).should.eql(defaultContext)
+    describe 'xpm - XpmClient', ->
+        it 'xpm - client - unknown dest path', (done) ->
+            (->
+                new XpmClient({cwd: __dirname, dest: "ggg/gg"})
+            ).should.be.throw("unknown xpm dest path: ggg/gg")
             done()
-        it 'xpm - default默认加载模块可直接调用', (done) ->
-            e = xpm.require('e')
-            e.should.eql(
-                e: 'this is e in file1.',
-                name: 'e',
-                b1: 'this is b in file1.',
-                b2: 'this is b in file2.',
-                A: 'this is a in file1.',
-                d: 'this is d in file1.'
-                outs1: "this is in outs1."
-            )
+        it 'xpm - client - unsupport plugin type', (done) ->
+            (->
+                plugin = {
+                    "type": "unknowntype"
+                }
+                new XpmClient({cwd: __dirname, dest: __dirname + "/dest", plugins: [plugin]})
+            ).should.be.throw("unsupport plugin type: unknowntype")
             done()
-
-
-
+        it 'xpm - client - add packages', (done) ->
+            xpm = new XpmClient({cwd: __dirname, dest: __dirname + "/dest"})
+            xpm.add(["pack4"])
+            done()

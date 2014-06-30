@@ -5,14 +5,14 @@
  *    todo 1. add the gulp stream,
  */
 
-var Xpm = require("./Xpm")
-var _addedXpms = {} //catch the xpm
+var Xpm = require("./lib/XpmServer")
+var _addedXpms = {} //cache the xpm
 var path = require('path')
 /**
  * @param {Object}
  *      {
  *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
- *          "isCheck": true 是否检测循环依赖，这是一个比较耗时的操作在生产环境可以动态设置为false, 默认true
+ *          "isCheck": true 是否检测循环依赖，生产环境可以设置为false, 默认true
  *      }
  */
 exports.add = function(config) {
@@ -51,7 +51,7 @@ exports.build = function() {
 /**
  *
  * @param {Xpm} xpm
- * @param {String} packageName
+ * @param {Array} packageArr
  * @param {Optional String} mochaOpts
  *   - `ui` name "bdd", "tdd", "exports" etc
  *   - `reporter` reporter instance, defaults to `mocha.reporters.Dot`
@@ -63,6 +63,6 @@ exports.build = function() {
  *   - `grep` string or regexp to filter tests with
  */
 exports.test = function(xpm, packageName, mochaOpts) {
-    require("./xpmTest")(xpm, packageName, mochaOpts)
+    require("./lib/xpm_tester")(xpm, packageName, mochaOpts)
 }
 

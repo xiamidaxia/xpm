@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.0.3
+v0.0.4
 
 a simple [Meteor](https://github.com/meteor/meteor) package manager, also can be used as a javascript 
 code package manager, and manage the server side and client side code together.

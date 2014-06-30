@@ -1,3 +1,4 @@
+/*
 var xpm = require('./index')
 var mymeteor = xpm.add({
     cwd: xpm.getMeteorPackageCwd(),
@@ -15,9 +16,12 @@ setTimeout(function() {
         "random",
         "minimongo",
         "routepolicy",
-        "logging"
+        "logging",
+        "xiami",
+        "webapp"
     ])
 }, 1000)
+*/
 
 /*server.listen(3000, function() {
     console.log("Meteor server listen on 3000.")

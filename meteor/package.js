@@ -1,0 +1,11 @@
+/**
+ * notes: this file must be run from xpm(https://github.com/xiamidaxia/xpm)
+ */
+Package.all({
+    defaults: ["underscore", "meteor"],
+    alias: {
+        "underscore": "_"
+    }
+})
+
+

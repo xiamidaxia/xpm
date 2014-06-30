@@ -1,4 +1,4 @@
 Package.server({
-    files: ["file1","file2"],
+    files: ["*.js"],
     exports: ['info']
 })

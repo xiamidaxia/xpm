@@ -26,13 +26,23 @@
   },
   "homepage": "https://github.com/xiamidaxia/xpm",
   "dependencies": {
-    "underscore": "^1.6.0",
-    "sequencify": "0.0.7",
-    "coffee-script": "^1.7.1"
-  },
-  "devDependencies": {
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "convert-source-map": "^0.3.4",
+    "glob": "^4.0.3",
+    "gulp": "^3.7.0",
+    "gulp-clean": "^0.3.0",
+    "gulp-cssmin": "^0.1.6",
+    "gulp-imagemin": "^0.6.1",
+    "gulp-uglify": "^0.3.0",
+    "gulp-util": "^2.2.16",
+    "html-minifier": "^0.6.3",
     "mocha": "^1.18.2",
+    "sequencify": "0.0.7",
     "should": "^3.3.1",
-    "chai": "^1.9.1"
-  }
+    "source-map": "^0.1.33",
+    "through2": "^0.5.1",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {}
 }

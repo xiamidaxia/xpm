@@ -1,5 +1,5 @@
 Package.server({
-    files: ["file1.js"],
+    files: ["*.js"],
     alias: {
         "underscore": "_"
     },

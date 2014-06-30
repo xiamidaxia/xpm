@@ -1,5 +1,5 @@
 Package.server({
-    "defaults": ["a","b"],
+    "defaults": ["a"],
     "alias": {
         "a": "A"
     },
