@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - 快印后台</title>
+    {%- block head %}
+    <link rel="stylesheet" href="{{h_domain}}/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{h_domain}}/css/layout.css">
+    <link rel="stylesheet" href="{{h_domain}}/bootstrap/css/datepicker.css">
+    <script src="{{h_domain}}/bootstrap/js/jquery.js"></script>
+    <script src="{{h_domain}}/bootstrap/js/bootstrap.js"></script>
+    <script src="{{h_domain}}/bootstrap/js/bootstrap-datepicker.js"></script>
+    <script src="{{h_domain}}/bootstrap/js/locales/bootstrap-datepicker.zh-CN.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="{{h_domain}}/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <script src="{{h_domain}}/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="{{h_domain}}/bootstrap/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script>
+            window.global = {}
+            global.s_domain = "{{h_domain}}"
+    </script>
+    <link rel="stylesheet" href="{{h_domain}}/common/base.css">
+    <script src="{{h_domain}}/sea-modules/seajs/seajs/2.1.1/sea.js"></script>
+    <script src="{{h_domain}}/sea-modules/seajs/seajs-text/1.0.2/seajs-text.js"></script>
+    <script src="{{h_domain}}/config.js"></script>
+    {%- endblock %}
+</head>
+<body>
+{%- block header %}
+{% include "/common/head.html" %}
+{%- endblock %}
+
+{%if flag == True%}
+    <div  id="msgSuccess" style="background-color: #dff0d8; padding: 30px; font-size: 14px;">{{msg}}</div>
+    <script>
+        setTimeout(function() {
+            document.getElementById('msgSuccess').style.display = "none"
+        }, 1000)
+    </script>
+{%elif flag == False%}
+    <div style="background-color: #DFBEBE; padding: 30px; font-size: 14px;">{{msg}}</div>
+{%endif%}
+
+{%- block content %}{%- endblock %}
+{%- block footer %}
+{% include "/common/foot.html" %}
+{%- endblock %}
+{%- block script %}
+<script src="{{h_domain}}/js/common/common.js"></script>
+{%- endblock %}
+</body>
+</html>

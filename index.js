@@ -5,7 +5,7 @@
  *    todo 1. add the gulp stream,
  */
 
-var Xpm = require("./lib/XpmServer")
+var Xpm = require("./lib/xpm_server")
 var _addedXpms = {} //cache the xpm
 var path = require('path')
 /**

@@ -79,20 +79,7 @@ describe "xpm", ()->
             ).should.be.throw()
             done()
     describe 'xpm - XpmClient', ->
-        it 'xpm - client - unknown dest path', (done) ->
-            (->
-                new XpmClient({cwd: __dirname, dest: "ggg/gg"})
-            ).should.be.throw("unknown xpm dest path: ggg/gg")
-            done()
-        it 'xpm - client - unsupport plugin type', (done) ->
-            (->
-                plugin = {
-                    "type": "unknowntype"
-                }
-                new XpmClient({cwd: __dirname, dest: __dirname + "/dest", plugins: [plugin]})
-            ).should.be.throw("unsupport plugin type: unknowntype")
-            done()
-        it 'xpm - client - add packages', (done) ->
+        it.only 'xpm - client - add packages', (done) ->
             xpm = new XpmClient({cwd: __dirname, dest: __dirname + "/dest"})
-            xpm.add(["pack4"])
+            xpm.add(["client-pack"])
             done()

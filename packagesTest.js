@@ -27,3 +27,8 @@ setTimeout(function() {
     console.log("Meteor server listen on 3000.")
 })*/
 
+
+//var path = require('path')
+// ./ ../  pack/11  /family/pack /family/pack
+//
+

@@ -3,5 +3,5 @@ Package.describe({
 })
 
 Package.client({
-    files: ["*"]
+    files: ["**/*"]
 })
