@@ -1,34 +1,6 @@
-/*
 var xpm = require('./index')
-var mymeteor = xpm.add({
-    cwd: xpm.getMeteorPackageCwd(),
-    default: true,
-    imports: {app: {}}
-})
-setTimeout(function() {
-    xpm.test(mymeteor, [
-        "meteor",
-        "deps",
-        "ejson",
-        "geojson-utils",
-        "id-map",
-        "ordered-dict",
-        "random",
-        "minimongo",
-        "routepolicy",
-        "logging",
-        "xiami",
-        "webapp"
-    ])
-}, 1000)
-*/
+var xpmServer = xpm.createServerXpm({ cwd: __dirname})
 
-/*server.listen(3000, function() {
-    console.log("Meteor server listen on 3000.")
-})*/
-
-
-//var path = require('path')
-// ./ ../  pack/11  /family/pack /family/pack
-//
-
+//xpmServer.require("meteor/underscore")
+var deps = xpmServer.require('meteor/deps')
+xpmServer.test(["meteor/meteor"])

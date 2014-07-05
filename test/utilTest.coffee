@@ -15,11 +15,24 @@ describe "xpm - util", ->
         assertType(a, "Function")
         ()->assertType(b, "Array", "Error...").should.throw("Error...")
         done()
+    it 'xpm - util - getRequireFn caching', (done) ->
+        _require = util.getRequireFn(__dirname + "/util/sandboxfile.js")
+        delete global.checkRequireCache
+        global.checkRequireCache = _require("./checkRequireCache.js") #one
+        _require("./checkRequireCache.js") #two
+        ret = _require("./checkRequireCache.js") #three
+        ret.should.be.eql "require once"
+        global.can_use_global.should.be.ok
+        done()
+    it 'xpm - util - getRequireFn returns equal with normal require', (done) ->
+        _require = util.getRequireFn(__dirname + "/util/sandboxfile.js")
+        _require("./checkRequire").inObj.should.be.eql(require('./util/checkRequire').inObj)
+        done()
     it "xpm - util - execFileByContext", (done) ->
         global.gOut = 333
         d = new Date
         sandbox = {_out1:333, _out2:{obj:333}, _out3: d}
-        ret = util.execFileByContext(__dirname + "/pack3/sandboxfile.js", sandbox)
+        ret = util.execFileByContext(__dirname + "/util/sandboxfile.js", sandbox)
         ret = ret.ret
         should(global._out1).eql(undefined)
         should(global._out2).eql(undefined)

@@ -1,3 +1,5 @@
+var Deps = require('./deps')
+
 it('deps - run', function(done) {
     var d = new Deps.Dependency;
     var x = 0;

@@ -2,7 +2,7 @@
 // Package docs at http://docs.meteor.com/#deps //
 //////////////////////////////////////////////////
 
-var Deps = exports.Deps = {};
+var Deps = module.exports = {};
 
 // http://docs.meteor.com/#deps_active
 Deps.active = false;

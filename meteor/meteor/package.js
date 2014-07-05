@@ -4,10 +4,7 @@ Package.describe({
 });
 Package.server({
     require: ["underscore"],
-    nrequire: ["fibers", "fibers/future", "path"],
     alias: {
-        "fibers": "Fiber",
-        "fibers/future": "Future",
         "underscore": "_"
     },
     files: [
@@ -22,14 +19,14 @@ Package.server({
         "url_server"
     ],
     exports: ["Meteor"],
-    tests: [
+/*    tests: [
         'test/debug_test.coffee',
         'test/dynamics_test',
         "test/fiber_helpers_test",
         "test/helpers_test",
         "test/timers_tests",
         "test/url_tests"
-    ]
+    ]*/
 })
 
 Package.client({

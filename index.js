@@ -2,56 +2,38 @@
  *  xiami 包管理器
  *  @author liuwencheng
  *
- *    todo 1. add the gulp stream,
  */
 
-var Xpm = require("./lib/xpm_server")
-var _addedXpms = {} //cache the xpm
+var XpmServer = require("./lib/xpm_server")
+var XpmClient = require('./lib/xpm_client')
 var path = require('path')
 /**
- * @param {Object}
+* @param {Object} config
+*      {
+*          "cwd": {String} 工作目录
+*      }
+*/
+exports.createServerXpm = function(config) {
+    return new XpmServer(config)
+}
+
+/**
+ * @param {Object} config
  *      {
- *          "cwd": {String} should be a real dir path, this will be changed in the future(todo).
- *          "isCheck": true 是否检测循环依赖，生产环境可以设置为false, 默认true
+ *          "cwd": {String} 工作目录
+ *          "dest": {String} 编译后的目标目录
  *      }
  */
-exports.add = function(config) {
-    var name
-    name = path.basename(config.cwd)
-    if (_addedXpms[name]) {
-        throw new Error("xpm: " + name + " is added.")
-    } else {
-        return _addedXpms[name] = new Xpm(config)
-    }
-}
-/**
- * xpm can be used by middlewares
- *
- * @param {Array} xpmArr
- * @param {Object | Ignore}
- *
- * @return {Function}
- */
-exports.getMiddleware = function(xpmArr, opts) {
-
-}
-/**
- *
- * @returns {string}
- */
-exports.getMeteorPackageCwd = function() {
-    return __dirname + "/packages"
-}
-/**
- * build all packages to the dist directory
- */
-exports.build = function() {
-
+exports.createClientXpm = function(config) {
+    return new XpmClient(config)
 }
 /**
  *
  * @param {Xpm} xpm
- * @param {Array} packageArr
+ * @param {Array} testArr
+ *      eg:
+ *          ["family/pack1", "meteor/pack1"]
+ *          ['family/*', "meteor/*"]
  * @param {Optional String} mochaOpts
  *   - `ui` name "bdd", "tdd", "exports" etc
  *   - `reporter` reporter instance, defaults to `mocha.reporters.Dot`
@@ -62,7 +44,7 @@ exports.build = function() {
  *   - `ignoreLeaks` ignore global leaks
  *   - `grep` string or regexp to filter tests with
  */
-exports.test = function(xpm, packageName, mochaOpts) {
-    require("./lib/xpm_tester")(xpm, packageName, mochaOpts)
+exports.test = function(xpm, testArr, mochaOpts) {
+    return xpm.test(testArr,mochaOpts)
 }
 

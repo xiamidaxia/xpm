@@ -1,8 +1,9 @@
 Package.describe({
-  summary: "Collection of small helper functions: _.map, _.each, ..."
+    summary: "Collection of small helper functions: _.map, _.each, ..."
 });
 
 Package.all({
-    "files": ['underscore.js'],
-    "exports": ['underscore']
+    "main": "underscore",
+    "exports": 'underscore',
+    auto: true
 })
