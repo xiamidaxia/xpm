@@ -1,1 +1,0 @@
-exports.default_main = "this is in default-main-file"

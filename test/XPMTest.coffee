@@ -8,34 +8,22 @@ path = require 'path'
 
 describe "xpm", ()->
     describe 'xpm - package', (done) ->
-        xpm = new XpmServer({cwd: __dirname})
         it 'xpm - package - _addData', (done) ->
-            a = new Package({path: __dirname + "/server_pack/a", type: "server", xpm:xpm})
+            a = new Package({path: __dirname + "/server_pack/a", type: "server"})
             a.all(
-                imports: ['a','a','b','b']
-                exports: ['a','a','b','b']
                 require: ["a",'a','b','b']
-                defaults: ['c','c','pack2/d','pack2/d'],
                 files: ['/style/*.css','/img/*.jpg']
-                alias:
-                    a: "A"
-                    b: "B"
                 main: "main"
-                auto: false
             )
             a._data.should.eql(
-                require: [ 'server_pack/a', 'server_pack/b', 'server_pack/c', 'pack2/d' ],
-                exports: [ 'INFO', 'NAME', 'a', 'b' ],
-                imports: ["outer", 'a', 'b' ],
-                files: [ '*.js', '/style/*.css','/img/*.jpg']
-                tests: ["*+(T|t)est*", "test/**/*"]
-                alias: { a: 'A', b: 'B' },
-                main: 'main',
-                auto: false
+                require: [  "server_pack/default_pack", 'server_pack/b' ],
+                files: [ '*.js', '/style/*.css', '/img/*.jpg' ],
+                tests: [ '*+(T|t)est*', 'test/**/*' ],
+                main: 'main'
             )
             done()
-        it 'xpm - package - check config: files/tests', (done) ->
-            p = xpm.addPackage('server_pack','check_files')
+        it 'xpm - package - getFiles, getTestFiles, getFilesSplitingByExtname', (done) ->
+            p = new Package({path: __dirname + "/server_pack/check_files", type: "server"})
             p.getTestFiles().should.be.eql(
                 [ 'fileTest.js',
                   'test',
@@ -46,14 +34,37 @@ describe "xpm", ()->
             p.getFiles().should.be.eql(
                 [ 'file.js', 'libs', 'libs/file.js', 'libs/libTest.js' ]
             )
+            p.getFilesSplitingByExtname().should.be.eql(
+                '.js': [ 'file.js', 'libs/file.js', 'libs/libTest.js' ],
+                __unknown__: [ 'libs' ]
+            )
             done()
-        it 'xpm - package - execServer - main file', (done) ->
-            p = xpm.addPackage('server_pack','has_default_main')
-            p.getExports().should.eql({ default_main: 'this is in default-main-file' })
+    describe 'xpm - XpmServer', ->
+        xpm = new XpmServer({cwd: __dirname})
+        it 'xpm - XpmServer - main path', (done) ->
+            ret = xpm.require('server_pack/check_main_path')
+            ret.should.be.eql("this is in default-main-file")
+            ret2 = xpm.require('server_pack/check_main_path/requireInsideMain')
+            ret2.should.eql("this is in default-main-file")
             done()
-        it 'xpm - package - execServer - require inside file', (done) ->
-            p = xpm.addPackage('server_pack', 'require_inside_files')
-            ret = p.getExports()
+        it 'xpm - XpmServer - default package.js', (done) ->
+            ret = xpm.require('server_pack/defaults_added')
+            ret.checkJquery()
+            ret.checkUnderscore()
+            done()
+        it 'xpm - XpmServer - check require params that have not extname', (done) ->
+            ret = xpm.require('server_pack/require_extname_check')
+            ret.should.eql(
+                lib1: 'lib1 load success',
+                mainfile: "main file load success"
+            )
+            done()
+        it 'xpm - XpmServer - coffee files', (done) ->
+            ret = xpm.require('server_pack/coffeefile')
+            ret.should.eql("this is in coffee file.")
+            done()
+        it 'xpm - XpmServer - require inside file', (done) ->
+            ret = xpm.require('server_pack/require_inside_files')
             ret.add_core1_file.should.ok
             ret.add_core2_file.should.ok
             ret.addFileCheck().should.ok
@@ -61,64 +72,19 @@ describe "xpm", ()->
                 ret.unaddFileCheck()
             ).should.throw('[server_pack/require_inside_files] 未加入文件：' + __dirname + "/server_pack/require_inside_files/unaddFile.js")
             done()
-        it 'xpm - package - check require params that have not extname', (done) ->
-            p = xpm.addPackage('server_pack', 'require_extname_check')
-            p.getExports().should.eql(
-                 lib1: 'lib1 load success',
-                 mainfile: "main file load success"
-            )
-            done()
-        it 'xpm - package - check module_exports', (done) ->
-            p = xpm.addPackage('server_pack', 'module_exports')
-            p.getExports().should.eql("this is from module_exports")
-            done()
-        it 'xpm - package - exportsToContext', (done) ->
-            p = xpm.addPackage('server_pack', 'export_context')
-            p.getExports().should.eql([ 'this is in default-main-file',
-                                        'this is from module_exports' ])
-            done()
-        it 'xpm - package - alias', (done) ->
-            p = xpm.addPackage('server_pack', 'alias')
-            p.getExports().should.eql([ 'this is in default-main-file',
-                                        'this is from module_exports' ])
-            done()
-        it 'xpm - package - coffee files', (done) ->
-            p = xpm.addPackage('server_pack', 'coffeefile')
-            p.getExports().should.eql("this is in coffee file.")
-            done()
-        it 'xpm - package - check default', (done) ->
-            p = xpm.addPackage('server_pack', 'check_default')
-            p.getExports().should.eql('added default package')
-            done()
-        it 'xpm - package - check imports', (done) ->
-            p = xpm.addPackage('server_pack', 'check_imports')
-            p.getExports().should.eql(
-                outer1: 'outer/pack1 exports1'
-                outer2: 'outer/pack1 exports2'
-            )
-            (()->
-                p = xpm.addPackage('server_pack', 'check_un_imports')
-            ).should.throw('package `server_pack/check_un_imports` need to imports family: outer2')
-            done()
-        it 'xpm - package - check require ouside files', (done) ->
-            ret = xpm.addPackage('server_pack', 'require_outside_files').getExports()
+        it 'xpm - XpmServer - require ouside files', (done) ->
+            ret = xpm.require('server_pack/require_outside_files')
             ret.checkRequireInsidePack()
             ret.checkRequireOuterPack()
             ret.checkUnRequirePack()
-            ret.checkUnImportsPack()
+            ret.checkUnRequireOuterPack()
             done()
-        it 'xpm - package - check auto close', (done) ->
-            p = xpm.addPackage('server_pack', 'auto_closed')
-            should(p.getExports()).not.be.ok
-            done()
-    describe 'xpm - XpmServer', ->
-        xpm = new XpmServer({cwd: __dirname})
         it 'xpm - XpmServer - create unknow cwd path', (done) ->
             (()->
                 xpm = new XpmServer({cwd: "/unknow/path"})
             ).should.throw("xpm unknow cwd path: /unknow/path")
             done()
-        it 'xpm - XpmServer - _checkNativeRequire', (done) ->
+        it 'xpm - XpmServer - method _checkNativeRequire', (done) ->
             _require = XpmServer.prototype._checkNativeRequire
             _require('fs', __filename).should.be.eql(require('fs'))
             _require('./fs',__filename).should.not.be.ok
@@ -135,7 +101,7 @@ describe "xpm", ()->
             xpm._execFile(detail)
             p._fileCache['lib/file1.js'].ret.should.be.eql('outer/pack1/lib/file1 exports')
             done()
-        it 'xpm - XpmServer - _getRequirePathDetail', (done) ->
+        it 'xpm - XpmServer - method _getRequirePathDetail', (done) ->
             _path = __dirname + "/pack1/a/file1.js"
             checkPath = (str, checkstr, family, packname) ->
                 detail = xpm._getRequirePathDetail(str, _path)
@@ -143,27 +109,31 @@ describe "xpm", ()->
                 _p.should.eql(checkstr)
                 detail.family.should.eql(family)
                 detail.packname.should.eql(packname)
-            checkPath("@/pack2/bb/a.js", "pack2/bb/a.js",'pack2','bb')
+                return detail
+            checkPath("pack2/bb/a.js", "pack2/bb/a.js",'pack2','bb')
             checkPath("./lib/file2.js", "pack1/a/lib/file2.js",'pack1','a')
             checkPath("../b/file1.js", "pack1/b/file1.js",'pack1','b')
-            checkPath("b/file1.js","pack1/b/file1.js",'pack1','b')
-            checkPath("@/pack2/a/","pack2/a",'pack2','a')
-            checkPath("@/pack2/a","pack2/a",'pack2','a')
-            ret1 = xpm._getRequirePathDetail("a", _path)
-            ret2 = xpm._getRequirePathDetail("@/pac3/a", _path)
-            ret1.ismain.should.be.ok
-            ret2.ismain.should.be.ok
+            checkPath("../file1.js", "pack1/file1.js", 'pack1', 'file1.js')
+            checkPath("pack2/a/","pack2/a",'pack2','a')
+            checkPath("pack2/a","pack2/a",'pack2','a').ismain.should.be.ok
+            checkPath('./','pack1/a','pack1','a').ismain.should.be.ok
+            checkPath('.','pack1/a','pack1','a').ismain.should.be.ok
+            xpm._getRequirePathDetail("pack2/a").should.be.an.Object
+            xpm._getRequirePathDetail("pack2/a/file.js").should.be.an.Object
+            (()->
+                xpm._getRequirePathDetail("../pac3/a")
+            ).should.throw("require('../pac3/a'): can not use '.' or '..' out of package")
             (()->
                 xpm._getRequirePathDetail("/pack2/a", _path)
-            ).should.throw()
+            ).should.throw("["+_path+"] require('/pack2/a'): can not use root path.")
             (()->
                 xpm._getRequirePathDetail("../../../b/file1.js", _path)
-            ).should.throw()
+            ).should.throw("["+_path+"] require('../../../b/file1.js'): outer workspace.")
             (()->
-                xpm._getRequirePathDetail("@/pack2", _path)
-            ).should.throw()
+                xpm._getRequirePathDetail("pack2", _path)
+            ).should.throw("["+_path+"] require('pack2'): uncorrect.")
             done()
-        it 'xpm - XpmServer - require', (done) ->
+        it 'xpm - XpmServer - method require', (done) ->
             a1 = xpm.require('server_pack/a')
             a2 = xpm.require('server_pack/a/file2.js')
             a1.should.be.eql(a2)

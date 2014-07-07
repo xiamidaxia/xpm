@@ -13,7 +13,7 @@ var path = require('path')
 *          "cwd": {String} 工作目录
 *      }
 */
-exports.createServerXpm = function(config) {
+exports.serverCreate = function(config) {
     return new XpmServer(config)
 }
 
@@ -24,7 +24,7 @@ exports.createServerXpm = function(config) {
  *          "dest": {String} 编译后的目标目录
  *      }
  */
-exports.createClientXpm = function(config) {
+exports.clientCreate = function(config) {
     return new XpmClient(config)
 }
 /**

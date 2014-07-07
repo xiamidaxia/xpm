@@ -1,0 +1,3 @@
+Package.server({
+    main: "underscore"
+})

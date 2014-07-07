@@ -1,4 +1,3 @@
 Package.server({
-    defaults: ["a"],
-    imports: ["outer"]
+    require: ["default_pack"]
 })
