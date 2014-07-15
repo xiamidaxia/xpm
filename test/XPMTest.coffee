@@ -159,7 +159,7 @@ describe "xpm", ()->
             ).should.be.throw('Recursive dependencies detected: check_recurse/a -> check_recurse/b -> check_recurse/c -> check_recurse/a')
             done()
     describe 'xpm - XpmClient', ->
-        it.skip 'xpm - client - add packages', (done) ->
+        it 'xpm - client - add packages', (done) ->
             xpm = new XpmClient({cwd: __dirname, dest: __dirname + "/dest"})
             xpm.add(["client_pack"], null, ()->
                 done()

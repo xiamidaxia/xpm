@@ -1,25 +1,27 @@
 /** {{family}}/{{name}} **/
-xpm.define("/{{family}}/{{name}}", [{{{requireStr}}}], function(require, exports, module){
+xpm.define("{{family}}/{{name}}", [{{{requireStr}}}], function(_module){
 
 {{#each stylesheet}}
-module._addStyle("{{{this.content}}}")
+_module._addStyle("{{{this.content}}}")
 {{/each}}
 {{#each template}}
-module._addFile("{{{this.path}}}", function(){
+_module._addFile("{{{this.path}}}", function(){
     return "{{{this.content}}}"
 })
 {{/each}}
 {{#each image}}
-module._addFile("{{{this.path}}}", function(){
-    return new Image(module.cwd + "/{{{this.path}}}")
+_module._addFile("{{{this.path}}}", function(){
+    var image = new Image
+    image.src = _module.getFullPath("{{{this.path}}}")
+    return image
 })
 {{/each}}
 {{#each javascript}}
-module._addFile("{{{path}}}", function() {
+_module._addFile("{{{path}}}", function(require, exports, module) {
 {{{content}}}
 })
 {{/each}}
-module._run('{{{mainpath}}}')
-module._runTest()
+_module._setMainPath('{{{mainpath}}}')
+//_module._runTest()
 
 })

@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var program = require('commander');
+var path = require('path')
+var Xpm = require('../lib/xpm_client')
+var fs = require('fs')
+
+program
+    .version('0.0.6')
+    .option('-w, --watch ', 'watch the file changed.')
+    .option('-d, --dest <path>', 'dest directory.')
+
+program.on('--help', function(){
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ xpm run ./cwd -d ./dest -w');
+    console.log('    $ xpm test -d ./dest');
+    console.log('');
+});
+
+program
+    .command('run')
+    .description('run and render the xpm packages to the given dest directory.')
+    .action(function(cwd){
+        if (!program.dest) {
+            throw new Error('please opts dest directory using `-d <dest>`')
+        }
+        var dest = path.join(process.cwd(), program.dest)
+        var cwd = path.join(process.cwd(), cwd || "")
+        var xpm = new Xpm({
+            cwd: cwd,
+            dest: dest
+        })
+        var families = []
+        fs.readdirSync(cwd).forEach(function(filename) {
+            var realpath = path.join(cwd, filename)
+            if (fs.statSync(realpath).isDirectory()) {
+                families.push(filename)
+            }
+        })
+        xpm.add(families)
+        if (program.watch) {
+            xpm.watch()
+        }
+    });
+
+program
+    .command('test <dest>')
+    .description('test xpm packages')
+    .action(function(cmd){
+        console.log('test "%s"', cmd);
+    });
+
+program
+    .command('*')
+    .action(function(env) {
+        console.log('unknown command: ' + env)
+    })
+
+program.parse(process.argv)
+
