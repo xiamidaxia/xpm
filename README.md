@@ -10,7 +10,9 @@ use in the [xiami](https://github.com/xiamidaxia/xiami) web server
 
 ```javascript
 var xpmServer = require('xpm').serverCreate({
-    cwd: __dirname
+    family: {
+        meteor: __dirname + "/meteor"
+    }
 })
 
 var mypack = xpmServer.require('myfamily/mypack')
@@ -21,7 +23,9 @@ console.log(mypack.version)
 
 ```javascript
 var xpmClient = require('xpm').clientCreate({
-    cwd: __dirname,
+    family: {
+        meteor: __dirname + "/meteor"
+    },
     dest: __dirname + "/" + "dest"
 })
 
