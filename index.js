@@ -11,9 +11,14 @@ global.isServer = true
 global.isClient = false
 /**
 * @param {Object} config
-*      {
-*          "cwd": {String} 工作目录
-*      }
+ *      {
+ *          "production": {Boolean} 是否为生产环境
+ *          "family": {Object} family path map
+ *              eg: {
+ *                      "meteor": __dirname + "/meteor",
+ *                      "xiami": __dirname + "/xiami"
+ *                  }
+ *      }
 */
 exports.serverCreate = function(config) {
     return new XpmServer(config)
@@ -22,8 +27,13 @@ exports.serverCreate = function(config) {
 /**
  * @param {Object} config
  *      {
- *          "cwd": {String} 工作目录
  *          "dest": {String} 编译后的目标目录
+ *          "production": {Boolean} 是否为生产环境
+ *          "family": {Object} family path map
+ *              eg: {
+ *                      "meteor": __dirname + "/meteor",
+ *                      "xiami": __dirname + "/xiami"
+ *                  }
  *      }
  */
 exports.clientCreate = function(config) {
@@ -34,7 +44,7 @@ exports.clientCreate = function(config) {
  * @param {Xpm} xpm
  * @param {Array} testArr
  *      eg:
- *          ["family/pack1", "meteor/pack1"]
+ *          ["family/pack1", "meteor/pack2","meteor/pack1"]
  *          ['family/*', "meteor/*"]
  * @param {Optional String} mochaOpts
  *   - `ui` name "bdd", "tdd", "exports" etc
