@@ -169,6 +169,6 @@ describe "xpm", ()->
     describe 'xpm - XpmClient', ->
         it 'xpm - client - add packages', (done) ->
             xpm = new XpmClient({cwd: __dirname, dest: __dirname + "/dest"})
-            xpm.add(["client_pack"], null, ()->
+            xpm.add(["client_pack/*"], ()->
                 done()
             )
