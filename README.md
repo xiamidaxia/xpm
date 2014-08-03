@@ -4,6 +4,8 @@ v0.0.6
 
 a simple javascript package manager that can manage the client side and server side code together.
 
+use in the [xiami](https://github.com/xiamidaxia/xiami) web server
+
 ##tutorials
 
 ```javascript
