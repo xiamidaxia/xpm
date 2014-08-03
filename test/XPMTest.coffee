@@ -7,6 +7,13 @@ _ = require 'underscore'
 path = require 'path'
 
 describe "xpm", ()->
+    addFamilies = (xpm)->
+        _arr = ["check_recurse","check_sequence","server_pack","client_pack","outer"]
+        _obj = {}
+        _arr.forEach((item)->
+            _obj[item] = path.join(__dirname,item)
+        )
+        xpm.addFamily(_obj)
     describe 'xpm - package', (done) ->
         it 'xpm - package - _addData', (done) ->
             a = new Package({path: __dirname + "/server_pack/a", type: "server"})
@@ -41,12 +48,25 @@ describe "xpm", ()->
             )
             done()
     describe 'xpm - XpmServer', ->
-        xpm = new XpmServer({cwd: __dirname})
+        xpm = new XpmServer()
+        addFamilies(xpm)
+        it 'xpm - XpmServer - unknow family', (done) ->
+            (()->
+                xpm.addFamily({'unknow': __dirname + "/unknow"})
+            ).should.throw('xpm family `unknow` unknow path: ' + __dirname + '/unknow')
+            (()->
+                xpm.require('unknown/aa')
+            ).should.throw('unknow family name: unknown')
+            done()
         it 'xpm - XpmServer - main path', (done) ->
             ret = xpm.require('server_pack/check_main_path')
             ret.should.be.eql("this is in default-main-file")
             ret2 = xpm.require('server_pack/check_main_path/requireInsideMain')
             ret2.should.eql("this is in default-main-file")
+            done()
+        it 'xpm - XpmServer - main preload', (done) ->
+            p = xpm.addPackage('server_pack','main_preload')
+            p._fileCache['index.js'].ret.should.be.eql("main preloaded")
             done()
         it 'xpm - XpmServer - default package.js', (done) ->
             ret = xpm.require('server_pack/defaults_added')
@@ -71,7 +91,7 @@ describe "xpm", ()->
             ret.addFileCheck().should.ok
             (()->
                 ret.unaddFileCheck()
-            ).should.throw('[server_pack/require_inside_files] not add file：' + __dirname + "/server_pack/require_inside_files/unaddFile.js")
+            ).should.throw('[server_pack/require_inside_files] not add file：' + "unaddFile.js")
             done()
         it 'xpm - XpmServer - require ouside files', (done) ->
             ret = xpm.require('server_pack/require_outside_files')
@@ -80,10 +100,10 @@ describe "xpm", ()->
             ret.checkUnRequirePack()
             ret.checkUnRequireOuterPack()
             done()
-        it 'xpm - XpmServer - create unknow cwd path', (done) ->
+        it 'xpm - XpmServer - create unknow family path', (done) ->
             (()->
-                xpm = new XpmServer({cwd: "/unknow/path"})
-            ).should.throw("xpm unknow cwd path: /unknow/path")
+                xpm.require('unknow/packname')
+            ).should.throw("unknow family name: unknow")
             done()
         it 'xpm - XpmServer - method _checkNativeRequire', (done) ->
             _require = XpmServer.prototype._checkNativeRequire
@@ -96,43 +116,42 @@ describe "xpm", ()->
             done()
         it 'xpm - XpmServer - check _execFile caching', (done) ->
             p = xpm.addPackage("outer","pack1")
-            p._fileCache['index.js'].should.not.be.empty
-            curfilepath = __dirname + "/outer/pack1/index.js"
-            detail = xpm._getRequirePathDetail("./lib/file1", curfilepath)
+            ret1 = xpm.require('outer/pack1')
+            ret2 = xpm.require('outer/pack1/index.js')
+            ret3 = p._fileCache['index.js'].ret
+            ret1.should.eql(ret2)
+            ret1.should.eql(ret3)
+            detail = xpm._getRequirePathDetail("./lib/file1", "./index.js", p)
             xpm._execFile(detail)
             p._fileCache['lib/file1.js'].ret.should.be.eql('outer/pack1/lib/file1 exports')
             done()
         it 'xpm - XpmServer - method _getRequirePathDetail', (done) ->
-            _path = __dirname + "/pack1/a/file1.js"
+            p1 = xpm.addPackage('outer', 'pack1')
             checkPath = (str, checkstr, family, packname) ->
-                detail = xpm._getRequirePathDetail(str, _path)
-                _p = path.relative(__dirname, detail.path)
-                _p.should.eql(checkstr)
+                detail = xpm._getRequirePathDetail(str, "lib/file1.js", p1)
+                detail.path.should.eql(checkstr)
                 detail.family.should.eql(family)
                 detail.packname.should.eql(packname)
                 return detail
-            checkPath("pack2/bb/a.js", "pack2/bb/a.js",'pack2','bb')
-            checkPath("./lib/file2.js", "pack1/a/lib/file2.js",'pack1','a')
-            checkPath("../b/file1.js", "pack1/b/file1.js",'pack1','b')
-            checkPath("../file1.js", "pack1/file1.js", 'pack1', 'file1.js')
-            checkPath("pack2/a/","pack2/a",'pack2','a')
-            checkPath("pack2/a","pack2/a",'pack2','a').ismain.should.be.ok
-            checkPath('./','pack1/a','pack1','a').ismain.should.be.ok
-            checkPath('.','pack1/a','pack1','a').ismain.should.be.ok
-            xpm._getRequirePathDetail("pack2/a").should.be.an.Object
-            xpm._getRequirePathDetail("pack2/a/file.js").should.be.an.Object
+            checkPath("outer/pack1/a.js", "a.js",'outer','pack1')
+            checkPath("outer/pack2/a.js", "a.js",'outer','pack2')
+            checkPath("outer2/a/","",'outer2','a')
+            checkPath("outer2/a","",'outer2','a').ismain.should.be.ok
+            checkPath("./file1.js", "lib/file1.js",'outer','pack1')
+            checkPath("../lib2/file1.js", "lib2/file1.js",'outer','pack1')
+            checkPath("../index.js", "index.js", 'outer', 'pack1')
+            checkPath('./','lib','outer','pack1')
+            checkPath('.','lib','outer','pack1')
+            checkPath('../','','outer','pack1').ismain.should.be.ok
             (()->
-                xpm._getRequirePathDetail("../pac3/a")
-            ).should.throw("require('../pac3/a'): can not use '.' or '..' out of package")
+                checkPath("../../outer3/a")
+            ).should.throw("[outer/pack1] [lib/file1.js] require('../../outer3/a'): outer current package workspace.")
             (()->
-                xpm._getRequirePathDetail("/pack2/a", _path)
-            ).should.throw("["+_path+"] require('/pack2/a'): can not use root path.")
+                checkPath("/pack2/a")
+            ).should.throw("[outer/pack1] [lib/file1.js] require('/pack2/a'): can not use root path.")
             (()->
-                xpm._getRequirePathDetail("../../../b/file1.js", _path)
-            ).should.throw("["+_path+"] require('../../../b/file1.js'): outer workspace.")
-            (()->
-                xpm._getRequirePathDetail("pack2", _path)
-            ).should.throw("["+_path+"] require('pack2'): uncorrect.")
+                checkPath("pack2")
+            ).should.throw("[outer/pack1] [lib/file1.js] require('pack2'): uncorrect.")
             done()
         it 'xpm - XpmServer - method require', (done) ->
             a1 = xpm.require('server_pack/a')
@@ -154,21 +173,25 @@ describe "xpm", ()->
             xpm._checkPackageSequency(p, p._data.imports).should.eql([ 'check_sequence/a', 'check_sequence/d','check_sequence/b' ])
             done()
         it 'xpm - XpmServer - check package require recurse', (done) ->
-            xpm2 = new XpmServer({cwd: __dirname})
+            xpm2 = new XpmServer()
+            xpm2.addFamily({check_recurse: __dirname + "/check_recurse"})
             (->
                 xpm2.require('check_recurse/a')
             ).should.be.throw('Recursive dependencies detected: check_recurse/a -> check_recurse/b -> check_recurse/c -> check_recurse/a')
             done()
         it 'xpm - XpmServer - check test imports', (done) ->
             xpm.require('server_pack/check_test_imports')
-            xpm2 = new XpmServer({cwd: __dirname, production:true})
+            xpm2 = new XpmServer({production:true})
             (->
                 xpm2.require('server_pack/check_test_imports')
             ).should.be.throw()
             done()
     describe 'xpm - XpmClient', ->
         it 'xpm - client - add packages', (done) ->
-            xpm = new XpmClient({cwd: __dirname, dest: __dirname + "/dest"})
+            xpm = new XpmClient({dest: __dirname + "/dest"})
+            xpm.addFamily(
+                client_pack: __dirname + "/client_pack"
+            )
             xpm.add(["client_pack/*"], ()->
                 done()
             )

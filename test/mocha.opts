@@ -1,3 +1,4 @@
 --compilers coffee:coffee-script/register
 --reporter spec
 --timeout 100000
+--bail

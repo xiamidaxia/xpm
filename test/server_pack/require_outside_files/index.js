@@ -7,7 +7,6 @@ module.exports = {
             outer_exports1: 'outer/pack1 exports1',
             outer_exports2: 'outer/pack1 exports2'
         }
-        require('../../outer/pack1').should.eql(outer)
         require('outer/pack1').should.eql(outer)
         require('outer/pack1/lib/file1.js').should.eql("outer/pack1/lib/file1 exports")
     },

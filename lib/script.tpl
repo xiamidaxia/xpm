@@ -21,6 +21,11 @@ _module._addFile("{{{path}}}", function(require, exports, module) {
 {{{content}}}
 })
 {{/each}}
+{{#each coffee}}
+_module._addFile("{{{path}}}", function(require, exports, module) {
+{{{content}}}
+})
+{{/each}}
 _module._setMainPath('{{{mainpath}}}')
 //_module._runTest()
 
