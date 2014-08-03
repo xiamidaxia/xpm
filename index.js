@@ -7,6 +7,8 @@
 var XpmServer = require("./lib/xpm_server")
 var XpmClient = require('./lib/xpm_client')
 var path = require('path')
+global.isServer = true
+global.isClient = false
 /**
 * @param {Object} config
 *      {
@@ -48,3 +50,4 @@ exports.test = function(xpm, testArr, mochaOpts) {
     return xpm.test(testArr,mochaOpts)
 }
 
+exports.util = require('./lib/util')

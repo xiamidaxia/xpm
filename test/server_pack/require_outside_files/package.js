@@ -1,3 +1,4 @@
 Package.server({
-    require: ['a','outer/pack1']
+    files: "**/*",
+    imports: ['a','outer/pack1']
 })

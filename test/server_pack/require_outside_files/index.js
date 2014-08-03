@@ -15,12 +15,12 @@ module.exports = {
         ;
         (function() {
             require('server_pack/b')
-        }).should.throw("[server_pack/require_outside_files] unrequire: server_pack/b")
+        }).should.throw("[server_pack/require_outside_files] no import: server_pack/b")
     },
     checkUnRequireOuterPack: function() {
         ;
         (function() {
             require("other/pack1")
-        }).should.throw("[server_pack/require_outside_files] unrequire: other/pack1")
+        }).should.throw("[server_pack/require_outside_files] no import: other/pack1")
     }
 }

@@ -11,14 +11,15 @@ describe "xpm", ()->
         it 'xpm - package - _addData', (done) ->
             a = new Package({path: __dirname + "/server_pack/a", type: "server"})
             a.all(
-                require: ["a",'a','b','b']
+                imports: ["a",'a','b','b']
                 files: ['/style/*.css','/img/*.jpg']
                 main: "main"
             )
             a._data.should.eql(
-                require: [  "server_pack/default_pack", 'server_pack/b' ],
+                imports: [  "server_pack/default_pack", 'server_pack/b' ],
                 files: [ '*.js', '/style/*.css', '/img/*.jpg' ],
-                tests: [ '*+(T|t)est*', 'test/**/*' ],
+                test_files: [],
+                test_imports: []
                 main: 'main'
             )
             done()
@@ -70,7 +71,7 @@ describe "xpm", ()->
             ret.addFileCheck().should.ok
             (()->
                 ret.unaddFileCheck()
-            ).should.throw('[server_pack/require_inside_files] 未加入文件：' + __dirname + "/server_pack/require_inside_files/unaddFile.js")
+            ).should.throw('[server_pack/require_inside_files] not add file：' + __dirname + "/server_pack/require_inside_files/unaddFile.js")
             done()
         it 'xpm - XpmServer - require ouside files', (done) ->
             ret = xpm.require('server_pack/require_outside_files')
@@ -150,13 +151,20 @@ describe "xpm", ()->
             done()
         it 'xpm - XpmServer - check package require sequence', (done) ->
             p = xpm.addPackage('check_sequence','c')
-            xpm._checkPackageSequency(p, p._data.require).should.eql([ 'check_sequence/a', 'check_sequence/d','check_sequence/b' ])
+            xpm._checkPackageSequency(p, p._data.imports).should.eql([ 'check_sequence/a', 'check_sequence/d','check_sequence/b' ])
             done()
         it 'xpm - XpmServer - check package require recurse', (done) ->
             xpm2 = new XpmServer({cwd: __dirname})
             (->
                 xpm2.require('check_recurse/a')
             ).should.be.throw('Recursive dependencies detected: check_recurse/a -> check_recurse/b -> check_recurse/c -> check_recurse/a')
+            done()
+        it 'xpm - XpmServer - check test imports', (done) ->
+            xpm.require('server_pack/check_test_imports')
+            xpm2 = new XpmServer({cwd: __dirname, production:true})
+            (->
+                xpm2.require('server_pack/check_test_imports')
+            ).should.be.throw()
             done()
     describe 'xpm - XpmClient', ->
         it 'xpm - client - add packages', (done) ->

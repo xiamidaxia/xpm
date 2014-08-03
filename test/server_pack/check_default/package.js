@@ -1,2 +1,3 @@
 Package.server({
+    files: "*"
 })

@@ -1,4 +1,4 @@
 Package.server({
-    require: ["d", "a"],
+    imports: ["d", "a"],
     files: ["file1.js", "file2.js"]
 })

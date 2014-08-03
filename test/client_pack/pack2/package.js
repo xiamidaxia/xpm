@@ -3,6 +3,6 @@ Package.describe({
 })
 
 Package.client({
-    require: "pack1",
+    imports: "pack1",
     files: ["**/*"]
 })

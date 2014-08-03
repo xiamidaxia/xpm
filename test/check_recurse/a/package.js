@@ -1,3 +1,3 @@
 Package.server({
-    require: ['b']
+    imports: ['b']
 })
