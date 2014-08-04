@@ -11,7 +11,8 @@ use in the [xiami](https://github.com/xiamidaxia/xiami) web server
 ```javascript
 var xpmServer = require('xpm').serverCreate({
     family: {
-        meteor: __dirname + "/meteor"
+        meteor: __dirname + "/meteor",
+        myfamily: "/any/real/path"
     }
 })
 
@@ -24,7 +25,8 @@ console.log(mypack.version)
 ```javascript
 var xpmClient = require('xpm').clientCreate({
     family: {
-        meteor: __dirname + "/meteor"
+        meteor: __dirname + "/meteor",
+        myfamily: "/any/real/path"
     },
     dest: __dirname + "/" + "dest"
 })
@@ -39,10 +41,18 @@ In the 'mypack' package directory, you need to add the file `package.js` just li
 Package.describe({
     info: "this is a mypack package."
 })
-
+Package.all({
+    files: ["common.js"]
+    test_files: ["test/**/*.js"]
+})
 Package.server({
-    require: ['underscore']             //your requires
-    files: ['fil1', 'file2']
+    imports: ['underscore']             
+    files: ['file1.js', 'file2.js']
+})
+
+Package.client({
+    imports: ['underscore']             
+    files: ['client*.js']
 })
 
 ```
