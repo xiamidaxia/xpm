@@ -2,7 +2,9 @@
 
 v0.0.6
 
-a simple javascript package manager that can manage the client side and server side code together.
+a powerfull webside package manager that can manage the client side and server side code together.
+
+also bind many powerful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 
 use in the [xiami](https://github.com/xiamidaxia/xiami) web server
 
@@ -52,7 +54,7 @@ Package.server({
 
 Package.client({
     imports: ['underscore']             
-    files: ['client*.js']
+    files: ['client*.js', "**/*.styl", "**/*.jpg"]
 })
 
 ```
