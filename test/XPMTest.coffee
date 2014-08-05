@@ -105,14 +105,10 @@ describe "xpm", ()->
                 xpm.require('unknow/packname')
             ).should.throw("unknow family name: unknow")
             done()
-        it 'xpm - XpmServer - method _checkNativeRequire', (done) ->
-            _require = XpmServer.prototype._checkNativeRequire
-            _require('fs', __filename).should.be.eql(require('fs'))
-            _require('./fs',__filename).should.not.be.ok
-            _require('../fs',__filename).should.not.be.ok
-            _require('aa/bb',__filename).should.not.be.ok
-            _require('underscore',__filename).should.be.eql(require('underscore'))
-            _require('unknow',__filename).should.not.be.ok
+        it 'xpm - XpmServer - method _pack_checkNativeRequire', (done) ->
+            p = xpm.require('server_pack/check_native_require')
+            p.fs.should.be.eql(require('fs'))
+            p.underscore.should.be.eql(require('underscore'))
             done()
         it 'xpm - XpmServer - check _execFile caching', (done) ->
             p = xpm.addPackage("outer","pack1")

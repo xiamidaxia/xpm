@@ -1,0 +1,4 @@
+@import "nib"
+.father
+    .children
+        border-radius 3px
