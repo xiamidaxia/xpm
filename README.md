@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.0.6
+v0.0.7
 
 a powerfull webside package manager that can manage the client side and server side code together.
 
