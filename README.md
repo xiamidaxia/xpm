@@ -9,7 +9,7 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web server
 ##tutorials
 
 ```javascript
-var xpmServer = require('xpm').serverCreate({
+var xpmServer = require('xpm2').serverCreate({
     family: {
         meteor: __dirname + "/meteor",
         myfamily: "/any/real/path"
@@ -23,7 +23,7 @@ console.log(mypack.version)
 ```
 
 ```javascript
-var xpmClient = require('xpm').clientCreate({
+var xpmClient = require('xpm2').clientCreate({
     family: {
         meteor: __dirname + "/meteor",
         myfamily: "/any/real/path"

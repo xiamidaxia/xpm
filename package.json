@@ -1,5 +1,5 @@
 {
-  "name": "xpm",
+  "name": "xpm2",
   "version": "0.0.7",
   "description": "Xiami Package Manager",
   "main": "index.js",
@@ -18,7 +18,7 @@
     "xpm",
     "package"
   ],
-  "author": "xiamidaxia (xiamidaxia@gmail.com)",
+  "author": "xiamidaxia",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/xiamidaxia/xpm/issues"
