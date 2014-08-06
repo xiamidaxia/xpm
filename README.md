@@ -6,6 +6,10 @@ A powerful web server package manager that can manage the client side and server
 
 Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 
+##documents
+
+[中文文档](https://github.com/xiamidaxia/xpm/blob/develop/docs/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md)
+
 ##tutorials
 
 ```javascript
@@ -35,7 +39,7 @@ var xpmClient = require('xpm2').clientCreate({
 })
 
 xpmClient.add('myfamily/mypack')
-
+xpmClient.run()
 ```
 
 In the 'mypack' package directory, you need to add the file `package.js` just like this:
@@ -63,9 +67,4 @@ Package.client({
 })
 
 ```
-
-##command line
-
-
-##API
 
