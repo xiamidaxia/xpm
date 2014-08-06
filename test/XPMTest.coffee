@@ -188,6 +188,7 @@ describe "xpm", ()->
             xpm.addFamily(
                 client_pack: __dirname + "/client_pack"
             )
-            xpm.add(["client_pack/*"], ()->
+            xpm.add(["client_pack/*"])
+            xpm.run(()->
                 done()
             )

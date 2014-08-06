@@ -1,5 +1,6 @@
 #todo
 
+- add browser mocha
 - add command line
 - add json type
 - add karma
