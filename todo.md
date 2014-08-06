@@ -3,7 +3,6 @@
 - production support, minify all files
 - add browser mocha
 - add command line
-- add json type
 - add karma
 - add sourceMap
 - add package api/examples
