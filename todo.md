@@ -1,5 +1,6 @@
 #todo
 
+- production support, minify all files
 - add browser mocha
 - add command line
 - add json type

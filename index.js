@@ -41,7 +41,7 @@ exports.clientCreate = function(config) {
 }
 /**
  *
- * @param {Xpm} xpm
+ * @param {XpmClient | XpmServer} xpm
  * @param {Array} testArr
  *      eg:
  *          ["family/pack1", "meteor/pack2","meteor/pack1"]

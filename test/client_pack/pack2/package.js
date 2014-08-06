@@ -3,6 +3,6 @@ Package.describe({
 })
 
 Package.client({
-    imports: "pack1",
+    imports: ["pack1","lib"],
     files: ["**/*"]
 })

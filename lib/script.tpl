@@ -1,6 +1,5 @@
 /** {{family}}/{{name}} **/
 xpm.define("{{family}}/{{name}}", [{{{requireStr}}}], function(_module){
-
 {{#each stylesheet}}
 _module.addStyle("{{{this.content}}}")
 {{/each}}

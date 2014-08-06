@@ -1,13 +1,13 @@
 {
   "name": "xpm2",
-  "version": "0.0.8",
+  "version": "0.0.7",
   "description": "Xiami Package Manager",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "sudo node test/browser/boot.js"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
