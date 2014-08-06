@@ -2,11 +2,9 @@
 
 v0.0.7
 
-a powerfull webside package manager that can manage the client side and server side code together.
+A powerful webside package manager that can manage the client side and server side code together, also bind many useful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 
-also bind many powerful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
-
-use in the [xiami](https://github.com/xiamidaxia/xiami) web server
+Using in the [xiami](https://github.com/xiamidaxia/xiami) web server
 
 ##tutorials
 
