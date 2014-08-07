@@ -23,8 +23,9 @@ var xpmServer = require('xpm2').serverCreate({
 })
 
 var mypack = xpmServer.require('myfamily/mypack')
-
 console.log(mypack.version)
+//this will auto run unit test in server
+xpmServer.test(["myfamily/mypack"])
 
 ```
 
@@ -39,6 +40,9 @@ var xpmClient = require('xpm2').clientCreate({
 })
 
 xpmClient.add('myfamily/mypack')
+//this will auto run unit test in browser
+xpmClient.test(['myfamily/mypack'])
+//render to a static file
 xpmClient.run()
 ```
 
