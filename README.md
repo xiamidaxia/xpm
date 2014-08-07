@@ -10,7 +10,9 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 
 [中文文档](https://github.com/xiamidaxia/xpm/blob/develop/docs/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md)
 
-##为啥要做这个，因为我希望:
+##读我开始
+
+###为啥要做这个，因为我希望:
 
 - 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前后端
     
@@ -70,7 +72,7 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 
     或许，这才是我最初的目的 ＝。＝
 
-##要做到这点我引进了一个package.js用来对包的描述
+###要做到这点我引进了一个package.js用来对包的描述
 
 - 描述包的依赖关系
 - 描述包需要加载的文件
@@ -78,9 +80,9 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 - 描述包的测试文件有哪些
 - 描述包的文档和例子有哪些 
 
-    这是我准备做的，因为我坚信 `代码即文档` ，这些放在一起会更直观, 新人也能知道从何入手, 也知道如何去做技术沉淀
+    这是我准备做的，因为我坚信 `代码即文档` ，文档和代码放在一起会更直观, 新人也能知道从何入手, 也知道如何去做技术沉淀
 
-##未来
+###未来
 
 - manifest和sourceMap支持
 - 针对单页面webapp开发功能, 比如我将css/html/js全部打包成一个文件用来加载，这个文件不就可以当成一个page来处理？
