@@ -2,7 +2,7 @@ var chai = require('./chai')
 module.exports = function(name) {
     if (name === "assert") {
         global.assert = chai.assert
-        global.test = chai.test
+        global.test = chai.assert
     } else if (name === "should") {
         chai.should()
     } else {
