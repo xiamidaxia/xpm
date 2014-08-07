@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.0.8
+v0.0.9
 
 A powerful web server package manager that can manage the client side and server side code together, also bind many useful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 
@@ -10,65 +10,79 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 
 [中文文档](https://github.com/xiamidaxia/xpm/blob/develop/docs/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md)
 
-##tutorials
+##为啥要做这个，因为我希望:
 
+- 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前后端
+    
 ```javascript
-//init server side code manager
-var xpmServer = require('xpm2').serverCreate({
-    family: {
-        meteor: __dirname + "/meteor",
-        //declare your family code path
-        myfamily: "/any/real/path"
-    }
-})
+    //我只需要这样定义
+    var xpmClient = xpm.createClient({
+        family: {
+            "npm": __dirname + "/node_modules",
+            "bower": __dirname + "/bower_components"
+        },
+        dest: __dirname + "/dest"
+    })
+    //接着只要在包里加一个package.js说明文件我就能在浏览器上跑了,如下:
+    xpm.use("bower/jquery", "npm/underscore", function($, _){
+        console.log($) 
+        console.log(_)   
+    }) 
+```    
+    
+- 让前后端的代码完全通用
 
-var mypack = xpmServer.require('myfamily/mypack')
-console.log(mypack.version)
-//this will auto run unit test in server
-xpmServer.test(["myfamily/mypack"])
+    真的不再需要像seajs一样还得加一个define来包装了, 真的毫无违和感哦，这样后端也能快速引用
 
+```javascript    
+    //服务端这样就能快速引用
+    var _ = xpmServer.require('npm/underscore')
+    console.log(_)
 ```
 
-```javascript
-//init client side code manager
-var xpmClient = require('xpm2').clientCreate({
-    family: {
-        meteor: __dirname + "/meteor",
-        myfamily: "/any/real/path"
-    },
-    dest: __dirname + "/" + "dest"
-})
+- 可以处理多种格式并且可以插件扩展
 
-xpmClient.add('myfamily/mypack')
-//this will auto run unit test in browser
-xpmClient.test(['myfamily/mypack'])
-//render to a static file
-xpmClient.run()
+    使用[gulpjs](https://github.com/gulpjs/gulp)，不管是less还是coffeescript文件都可以快速处理, 未来准备支持angular模板包
+    
+- 测试代码前后端通用并自动化运行
+    
+```javascript
+
+    //这样就能让前端和后端代码的所有包指定的测试用例都跑起来
+    xpmClient.test("[meteor/*, xiami/*]")
+    xpmServer.test("[meteor/*, xiami/*]")
+    
 ```
 
-In the 'mypack' package directory, you need to add the file `package.js` just like this:
+- 浏览器异步加载执行文件
+    
+    这个就不多解释了, 不异步都说不过去
+        
+- 完美无缝支持CommonJs  
 
-```javascript
-//just describe
-Package.describe({
-    info: "this is a mypack package."
-    version: "0.0.1"
-})
-//files you want to use both client side and server side
-Package.all({
-    files: ["common.js"]
-    test_files: ["test/**/*.js"]
-})
-//files only in server
-Package.server({
-    imports: ['underscore']             
-    files: ['file1.js', 'file2.js']
-})
-//files in client, you can use many file types like '.less' '.styl' '.tpl' and so on
-Package.client({
-    imports: ['underscore']             
-    files: ['client*.js', "**/*.styl", "**/*.jpg"]
-})
+    不再害怕 require("a" + "/b.js") 或者加if判断等怪异的加载方式
+    
+- 管理生产环境和开发环境不同的代码
 
-```
+    设置一下就能让代码完全不一样了
+
+- 能跑[meteor](https://www.github.com/meteor/meteor)代码 
+
+    或许，这才是我最初的目的 ＝。＝
+
+##要做到这点我引进了一个package.js用来对包的描述
+
+- 描述包的依赖关系
+- 描述包需要加载的文件
+- 描述包加载的文件用于前端还是后端
+- 描述包的测试文件有哪些
+- 描述包的文档和例子有哪些 
+
+    这是我准备做的，因为我坚信 `代码即文档` ，这些放在一起会更直观, 新人也能知道从何入手, 也知道如何去做技术沉淀
+
+##未来
+
+- manifest和sourceMap支持
+- 针对单页面webapp开发功能, 比如我将css/html/js全部打包成一个文件用来加载，这个文件不就可以当成一个page来处理？
+
 
