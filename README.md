@@ -36,7 +36,13 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
     真的不再需要像seajs一样还得加一个define来包装了, 真的毫无违和感哦，这样后端也能快速引用:
 
 ```javascript    
-    //服务端这样引用
+    var xpmServer = xpm.createServer({
+        family: {
+            "npm": __dirname + "/node_modules",
+            "bower": __dirname + "/bower_components"
+        }
+    })
+    //服务端调用
     var _ = xpmServer.require('npm/underscore')
     console.log(_)
 ```
