@@ -29,6 +29,8 @@ _module.setMainPath('{{{mainpath}}}')
 {{#if main_preload}}
 _module.preload()
 {{/if}}
-//_module.runTest()
+{{#if testFiles}}
+_module.addTestFiles({{{testFiles}}})
+{{/if}}
 
 })

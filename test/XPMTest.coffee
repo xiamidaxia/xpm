@@ -16,7 +16,7 @@ describe "xpm", ()->
         xpm.addFamily(_obj)
     describe 'xpm - package', (done) ->
         it 'xpm - package - _addData', (done) ->
-            a = new Package({path: __dirname + "/server_pack/a", type: "server"})
+            a = new Package({path: __dirname + "/server_pack/a", 'family':"server_pack","name":"a",type: "server"})
             a.all(
                 imports: ["a",'a','b','b']
                 files: ['/style/*.css','/img/*.jpg']
@@ -31,7 +31,7 @@ describe "xpm", ()->
             )
             done()
         it 'xpm - package - getFiles, getTestFiles, getFilesSplitingByExtname', (done) ->
-            p = new Package({path: __dirname + "/server_pack/check_files", type: "server"})
+            p = new Package({path: __dirname + "/server_pack/check_files", 'family':"server_pack","name":"check_files", type: "server"})
             p.getTestFiles().should.be.eql(
                 [ 'fileTest.js',
                   'test',
