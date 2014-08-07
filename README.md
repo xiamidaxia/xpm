@@ -24,7 +24,7 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
         },
         dest: __dirname + "/dest"
     })
-    //接着只要在包里加一个package.js说明文件我就能在浏览器上跑了,如下:
+    //接着只要在包里加一个package.js说明文件我就能在浏览器上跑了,如下为浏览器端调用(异步):
     xpm.use("bower/jquery", "npm/underscore", function($, _){
         console.log($) 
         console.log(_)   
@@ -33,10 +33,10 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
     
 - 让前后端的代码完全通用
 
-    真的不再需要像seajs一样还得加一个define来包装了, 真的毫无违和感哦，这样后端也能快速引用
+    真的不再需要像seajs一样还得加一个define来包装了, 真的毫无违和感哦，这样后端也能快速引用:
 
 ```javascript    
-    //服务端这样就能快速引用
+    //服务端这样引用
     var _ = xpmServer.require('npm/underscore')
     console.log(_)
 ```
@@ -44,6 +44,24 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 - 可以处理多种格式并且可以插件扩展
 
     使用[gulpjs](https://github.com/gulpjs/gulp)，不管是less还是coffeescript文件都可以快速处理, 未来准备支持angular模板包
+
+```javascript
+    //这样我就能快速的自定义插件
+    xpmClient.addPlugin({
+        type: "coffee",
+        extnames: [".coffee"],
+        through: function(stream){
+            return stream
+                .pipe(require('gulp-coffee')({bare:true}))
+                .pipe(through.obj(function(file, enc, next) {
+                    file.path = gutil.replaceExtension(file.path, '.coffee');
+                    this.push(file)
+                    next()
+                }))
+        }
+    })
+    
+```            
     
 - 测试代码前后端通用并自动化运行
     
@@ -77,13 +95,13 @@ Using in the [xiami](https://github.com/xiamidaxia/xiami) web framework
 - 描述包需要加载的文件
 - 描述包加载的文件用于前端还是后端
 - 描述包的测试文件有哪些
-- 描述包的文档和例子有哪些 
+- 描述包的文档和例子有哪些 (todo)
 
     这是我准备做的，因为我坚信 `代码即文档` ，文档和代码放在一起会更直观, 新人也能知道从何入手, 也知道如何去做技术沉淀
 
 ##未来
 
 - manifest和sourceMap支持
-- 针对单页面webapp开发功能, 比如我将css/html/js全部打包成一个文件用来加载，这个文件不就可以当成一个page来处理？
+- 针对单页面webapp应用开发功能, 比如我将css/html/js全部打包成一个文件用来加载，这个文件不就可以当成一个page来处理？
 
 
