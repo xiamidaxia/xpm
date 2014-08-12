@@ -7,52 +7,31 @@
 var program = require('commander');
 var path = require('path')
 var Xpm = require('../lib/xpm_client')
+var watch = require('../lib/watcher')
+var _ = require('underscore')
 var fs = require('fs')
 
 program
-    .version('0.0.6')
-    .option('-w, --watch ', 'watch the file changed.')
-    .option('-d, --dest <path>', 'dest directory.')
+    .version('0.0.11')
+    //.option('-w, --watch ', 'watch the file changed.')
+    //.option('-d, --dest <path>', 'dest directory.')
 
 program.on('--help', function(){
     console.log('  Examples:');
     console.log('');
-    console.log('    $ xpm run ./cwd -d ./dest -w');
-    console.log('    $ xpm test -d ./dest');
+    console.log('    $ xpm run');
     console.log('');
 });
 
 program
     .command('run')
     .description('run and render the xpm packages to the given dest directory.')
-    .action(function(cwd){
-        if (!program.dest) {
-            throw new Error('please opts dest directory using `-d <dest>`')
+    .action(function(){
+        var cwd = process.cwd()
+        if (!fs.existsSync(path.join(cwd, "Xpmfile.js"))) {
+            throw new Error('xpm run need file `Xpmfile.js` in your current directory.')
         }
-        var dest = path.join(process.cwd(), program.dest)
-        var cwd = path.join(process.cwd(), cwd || "")
-        var xpm = new Xpm({
-            cwd: cwd,
-            dest: dest
-        })
-        var families = []
-        fs.readdirSync(cwd).forEach(function(filename) {
-            var realpath = path.join(cwd, filename)
-            if (fs.statSync(realpath).isDirectory()) {
-                families.push(filename)
-            }
-        })
-        xpm.add(families)
-        if (program.watch) {
-            xpm.watch()
-        }
-    });
-
-program
-    .command('test <dest>')
-    .description('test xpm packages')
-    .action(function(cmd){
-        console.log('test "%s"', cmd);
+        run(cwd)
     });
 
 program
@@ -63,3 +42,26 @@ program
 
 program.parse(process.argv)
 
+function run(cwd) {
+    var config = require(path.join(cwd, "Xpmfile.js"))
+    if (!config.dest) {
+        throw new Error('[Xpmfile.js] need to config `dest`.')
+    }
+    var xpm = new Xpm({
+        dest: config.dest,
+        family: config.family || {},
+        production: config.production
+    })
+    config.add = config.add || []
+    config.test = config.test || []
+    //add
+    xpm.add(config.add)
+    //test by mocha
+    xpm.test(config.test, config.mochaOpts || {})
+    xpm.run(function() {
+        if (config.watch) {
+            xpm.watch()
+        }
+    })
+
+}
