@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.0.12
+v0.1.0
 
 A powerful web server package manager that can manage the client side and server side code together, also bind many useful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 
@@ -18,9 +18,11 @@ npm install xpm2
 
 ```shell
 
-    npm install xpm2 -g
+    $ npm install xpm2 -g
+    
     # need file `Xpmfile.js`  in your current directory, see `XpmfileExample.js`
-    xpm run 
+    
+    $ xpm run 
 
 ```
 
