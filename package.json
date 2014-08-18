@@ -1,6 +1,6 @@
 {
   "name": "xpm2",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Xiami Package Manager",
   "main": "index.js",
   "directories": {

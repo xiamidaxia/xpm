@@ -187,6 +187,11 @@ describe "xpm", ()->
                 xpm2.require('server_pack/check_test_imports')
             ).should.be.throw()
             done()
+        it 'xpm - XpmServer - check all preload', (done) ->
+            global.checkAllPreload = []
+            xpm.require('server_pack/check_all_preload')
+            global.checkAllPreload.should.be.eql([ 'file3', 'file2', 'file1', 'index', 'lib1' ])
+            done()
     describe 'xpm - XpmClient', ->
         it 'xpm - client - add packages', (done) ->
             xpm = new XpmClient({dest: __dirname + "/dest"})

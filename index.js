@@ -1,6 +1,6 @@
 /**
- *  xiami 包管理器
- *  @author liuwencheng
+ *  Xiami Package Manager
+ *  @author xiamidaxia
  *
  */
 
