@@ -1,3 +1,4 @@
 Package.server({
-    imports: ["default_pack"]
+    imports: ["default_pack"],
+    main: 'index.js'
 })

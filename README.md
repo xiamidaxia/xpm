@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.2.0
+v0.2.1
 
 A powerful web server package manager that can manage the client side and server side code together, also bind many useful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 

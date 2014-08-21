@@ -27,6 +27,8 @@ describe "xpm", ()->
                 files: [ '*.js', '/style/*.css', '/img/*.jpg' ],
                 test_files: [],
                 test_imports: []
+                main_preload: false,
+                all_preload: false
                 main: 'main'
             )
             done()
@@ -51,6 +53,15 @@ describe "xpm", ()->
             p = new Package({path: __dirname + "/server_pack/check_glob", 'family':"server_pack","name":"check_glob", type: "server"})
             p.getFiles().should.be.eql(["file1.js","file2.js"])
             p.getTestFiles().should.be.eql(["test1.js"])
+            done()
+        it 'xpm - package - check default config', (done) ->
+            familyname = "check_default_imports"
+            a = new Package({path: __dirname + "/" + familyname + "/a", 'family':familyname,"name":"a", type: "server"})
+            b = new Package({path: __dirname + "/" +familyname + "/b", 'family':familyname,"name":"b", type: "server"})
+            c = new Package({path: __dirname + "/" +familyname + "/c", 'family':familyname,"name":"c", type: "server"})
+            a._data.imports.should.be.eql([])
+            b._data.imports.should.be.eql([ 'check_default_imports/underscore' ])
+            c._data.imports.should.be.eql([ 'check_default_imports/a', 'check_default_imports/b' ])
             done()
     describe 'xpm - XpmServer', ->
         xpm = new XpmServer()
