@@ -1,3 +1,3 @@
 Package.all({
-    imports: "underscore"
+    imports: ["underscore", "^a", "^underscore"]
 })

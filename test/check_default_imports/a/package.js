@@ -1,0 +1,3 @@
+Package.all({
+    imports: "^b"
+})

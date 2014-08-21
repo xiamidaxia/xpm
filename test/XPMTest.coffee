@@ -60,8 +60,8 @@ describe "xpm", ()->
             b = new Package({path: __dirname + "/" +familyname + "/b", 'family':familyname,"name":"b", type: "server"})
             c = new Package({path: __dirname + "/" +familyname + "/c", 'family':familyname,"name":"c", type: "server"})
             a._data.imports.should.be.eql([])
-            b._data.imports.should.be.eql([ 'check_default_imports/underscore' ])
-            c._data.imports.should.be.eql([ 'check_default_imports/a', 'check_default_imports/b' ])
+            b._data.imports.should.be.eql([])
+            c._data.imports.should.be.eql( [ 'check_default_imports/a', 'check_default_imports/b' ])
             done()
     describe 'xpm - XpmServer', ->
         xpm = new XpmServer()

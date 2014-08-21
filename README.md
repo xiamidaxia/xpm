@@ -24,7 +24,7 @@ npm install xpm2
 
 ```
 
-##为啥要做个，因为希望:
+##特点:
 
 - 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前后端
     
@@ -65,7 +65,7 @@ npm install xpm2
     使用[gulpjs](https://github.com/gulpjs/gulp)，不管是less还是coffeescript文件都可以快速处理, 未来准备支持angular模板包
 
 ```javascript
-    //这样我就能快速的自定义插件
+    //这样我就能快速的自定义插件,并扩展文件格式
     xpmClient.addPlugin({
         type: "coffee",
         extnames: [".coffee"],
@@ -77,7 +77,11 @@ npm install xpm2
                     this.push(file)
                     next()
                 }))
-        }
+        },
+        tpl:
+            '_module.addFile("{{{path}}}", function(require, exports, module) {\n' +
+            '{{{contents}}}\n' +
+            '})\n'
     })
     
 ```            
