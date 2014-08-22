@@ -205,7 +205,10 @@ describe "xpm", ()->
             done()
     describe 'xpm - XpmClient', ->
         it 'xpm - client - add packages', (done) ->
-            xpm = new XpmClient({dest: __dirname + "/dest"})
+            xpm = new XpmClient({
+                dest: __dirname + "/dest"
+                static_url: "http://locahost/static"
+            })
             xpm.addFamily(
                 client_pack: __dirname + "/client_pack"
             )

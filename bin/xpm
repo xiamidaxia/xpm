@@ -28,8 +28,8 @@ program
     .description('run and render the xpm packages to the given dest directory.')
     .action(function(){
         var cwd = process.cwd()
-        if (!fs.existsSync(path.join(cwd, "Xpmfile.js"))) {
-            throw new Error('xpm run need file `Xpmfile.js` in your current directory.')
+        if (!fs.existsSync(path.join(cwd, "client_config.js"))) {
+            throw new Error('xpm run need file `client_config.js` in your current directory.')
         }
         run(cwd)
     });
@@ -43,15 +43,11 @@ program
 program.parse(process.argv)
 
 function run(cwd) {
-    var config = require(path.join(cwd, "Xpmfile.js"))
+    var config = require(path.join(cwd, "client_config.js"))
     if (!config.dest) {
-        throw new Error('[Xpmfile.js] need to config `dest`.')
+        throw new Error('[client_config.js] need to config `dest`.')
     }
-    var xpm = new Xpm({
-        dest: config.dest,
-        family: config.family || {},
-        production: config.production
-    })
+    var xpm = new Xpm(config)
     config.add = config.add || []
     config.test = config.test || []
     //add
