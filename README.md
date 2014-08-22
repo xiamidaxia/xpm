@@ -1,6 +1,6 @@
 #Xiami Package Manager
 
-v0.2.1
+v0.2.2
 
 A powerful web server package manager that can manage the client side and server side code together, also bind many useful tools like coffeescript, less, stylus, jade, imagemin, mocha, chai and so on.
 
@@ -62,7 +62,7 @@ npm install xpm2
 
 - 可以处理多种格式并且可以插件扩展
 
-    使用[gulpjs](https://github.com/gulpjs/gulp)，不管是less还是coffeescript文件都可以快速处理, 未来准备支持angular模板包
+    使用[gulpjs](https://github.com/gulpjs/gulp)，不管是less还是coffeescript文件都可以快速处理
 
 ```javascript
     //这样我就能快速的自定义插件,并扩展文件格式
