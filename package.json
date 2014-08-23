@@ -1,6 +1,6 @@
 {
   "name": "xpm2",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Xiami Package Manager",
   "main": "index.js",
   "directories": {
@@ -38,6 +38,7 @@
     "gulp-cssmin": "^0.1.6",
     "gulp-imagemin": "^0.6.1",
     "gulp-jshint": "^1.6.3",
+    "gulp-ngmin": "^0.3.0",
     "gulp-sourcemaps": "^1.1.1",
     "gulp-uglify": "^0.3.1",
     "gulp-util": "^2.2.19",
