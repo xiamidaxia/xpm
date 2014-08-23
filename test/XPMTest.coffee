@@ -208,6 +208,7 @@ describe "xpm", ()->
             xpm = new XpmClient({
                 dest: __dirname + "/dest"
                 static_url: "http://locahost/static"
+                production: true
             })
             xpm.addFamily(
                 client_pack: __dirname + "/client_pack"

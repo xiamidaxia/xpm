@@ -55,7 +55,7 @@ function run(cwd) {
     //test by mocha
     xpm.test(config.test, config.mochaOpts || {})
     xpm.run(function() {
-        if (config.watch) {
+        if (!config.production && config.watch) {
             xpm.watch()
         }
     })

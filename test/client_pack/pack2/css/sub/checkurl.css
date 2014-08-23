@@ -1,3 +1,4 @@
 body {
-    fonts: url("../../fonts/ionicons.svg")
+    fonts: url("../../fonts/ionicons.svg"),
+    background: url('../../img/none.jpg')
 }
