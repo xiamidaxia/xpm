@@ -53,7 +53,7 @@ function run(cwd) {
     //add
     xpm.add(config.add)
     //test by mocha
-    xpm.test(config.test, config.mochaOpts || {})
+    xpm.test(config.test, config.mocha_opts || {})
     xpm.run(function() {
         if (config.watch) {
             xpm.watch()

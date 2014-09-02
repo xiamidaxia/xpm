@@ -1,6 +1,6 @@
 body {
     margin: 10px;
-    background: url('http://www.baidu.com/') no-repeat 0 0;
+    background: url('http://www.baidu.com/this_will_not_change') no-repeat 0 0;
 }
 
 #thisId {

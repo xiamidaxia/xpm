@@ -7,6 +7,6 @@ module.exports = {
     production: false,
     static_url: "/static",  //
     test: ["client_pack/*"], //this will auto run all test files
-    mochaOpts: {},
+    mocha_opts: {},
     watch: true
 }
