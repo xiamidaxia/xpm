@@ -5,6 +5,7 @@ module.exports = function(name) {
         global.test = chai.assert
     } else if (name === "should") {
         chai.should()
+        chai.use(require('xpm/sinon-chai'))
     } else {
         global.expect = chai.expect
     }
