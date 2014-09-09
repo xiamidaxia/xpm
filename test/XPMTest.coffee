@@ -51,7 +51,7 @@ describe "xpm", ()->
             done()
         it 'xpm - package - glob unneeded file check', (done) ->
             p = new Package({path: __dirname + "/server_pack/check_glob", 'family':"server_pack","name":"check_glob", type: "server"})
-            p.getFiles().should.be.eql(["file1.js","file2.js"])
+            p.getFiles().should.be.eql(["lib/lib.js", "file1.js","file2.js","lib"])
             p.getTestFiles().should.be.eql(["test1.js"])
             done()
         it 'xpm - package - check default config', (done) ->
