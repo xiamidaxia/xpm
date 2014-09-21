@@ -33,7 +33,8 @@ npm install xpm2
 - (前端调用) 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前端
     
 ```javascript
-    //我只需要这样定义
+    // 我只需要这样声明
+    // 如果不想手动去这样写，也可通过命令行 `xpm run` 自动运行
     var xpmClient = xpm.createClient({
         family: {
             "npm": __dirname + "/node_modules",
@@ -41,12 +42,19 @@ npm install xpm2
         },
         dest: __dirname + "/dest"
     })
-    //接着只要在包里加一个package.js说明文件我就能在浏览器上跑了,如下为浏览器端调用(异步):
+    xpmClient.add(["npm/underscore",'bower/*'])
+    // render to dest
+    xpmClient.run() 
+```    
+
+接着浏览器上可以这样调用：
+
+```javascript
     xpm.use("bower/jquery", "npm/underscore", function($, _){
         console.log($) 
         console.log(_)   
     }) 
-```    
+```
     
 - (后端调用) 让前后端的代码完全通用
 
@@ -59,16 +67,18 @@ npm install xpm2
             "bower": __dirname + "/bower_components"
         }
     })
+    xpmServer.add(["npm/underscore",'bower/*'])
+    
     //服务端调用
     var _ = xpmServer.require('npm/underscore')
     console.log(_)
 ```
-- (混合全栈开发) 如果我想让一个文件同时被前后端同时调用，那么这个文件可以这样写
+- (混合全栈开发) 如果我想让一个文件同时被前后端调用，那么这个文件可以这样写：
 
 ```javascript
     var blogCollection = new Meteor.Collection('blog')
     
-    //这段里只会在浏览器端被调用 
+    //这段只会在浏览器端被调用 
     if (global.isClient) {
         //订阅blog
         var myId = 3
@@ -81,7 +91,7 @@ npm install xpm2
         })
     }
     
-    //这段里只会在服务端被调用 
+    //这段只会在服务端被调用 
     if (global.isServer) {
         //发布blog
         Meteor.publish("blog", function(id) {
@@ -130,14 +140,10 @@ npm install xpm2
     
     这个就不多解释了, 不异步都说不过去
         
-- 完美无缝支持CommonJs  
+- 前后端完美无缝支持CommonJs  
 
     不再害怕 require("a" + "/b.js") 或者加if判断等的加载方式
     
-- 能跑[meteor](https://www.github.com/meteor/meteor)代码 
-
-    或许，这才是我最初的目的 ＝。＝
-
 - 自动生成sourceMap及manifest文件，自动版本控制，自动压缩合并代码并发布生产环境, 例子可见 [xiami-examples](https://github.com/xiamidaxia/xiami_examples)
 
 
