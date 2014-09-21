@@ -28,7 +28,7 @@ npm install xpm2
 
 [xiami_examples](https://github.com/xiamidaxia/xiami_examples)
 
-##特点:
+##入门:
 
 - (前端调用) 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前端
     
@@ -62,6 +62,32 @@ npm install xpm2
     //服务端调用
     var _ = xpmServer.require('npm/underscore')
     console.log(_)
+```
+- (混合全栈开发) 如果我想让一个文件同时被前后端同时调用，那么这个文件可以这样写
+
+```javascript
+    var blogCollection = new Meteor.Collection('blog')
+    
+    //这段里只会在浏览器端被调用 
+    if (global.isClient) {
+        //订阅blog
+        var myId = 3
+        var myBlog = Meteor.subscribe('blog', myId, {
+            onReady: function(ready) {
+            },
+            onError: function(error) {
+                console.log(error.message)
+            }
+        })
+    }
+    
+    //这段里只会在服务端被调用 
+    if (global.isServer) {
+        //发布blog
+        Meteor.publish("blog", function(id) {
+            return blogCollection.find({id:id})
+        })
+    }
 ```
 
 - 可以处理多种格式并且可以插件扩展
