@@ -47,7 +47,7 @@ npm install xpm2
     xpmClient.run() 
 ```    
 
-    接着浏览器上可以这样调用：
+接着浏览器上可以这样调用：
 
 ```javascript
     xpm.use("bower/jquery", "npm/underscore", function($, _){
