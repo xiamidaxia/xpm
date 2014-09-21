@@ -28,7 +28,7 @@ npm install xpm2
 
 [xiami_examples](https://github.com/xiamidaxia/xiami_examples)
 
-##入门:
+##特点:
 
 - (前端调用) 可以将 `npm install` 或 [bower](https://github.com/bower/bower) install 安装的代码无缝加载利用到前端
     
