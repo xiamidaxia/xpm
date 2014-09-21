@@ -47,7 +47,7 @@ npm install xpm2
     xpmClient.run() 
 ```    
 
-接着浏览器上可以这样调用：
+    接着浏览器上可以这样调用：
 
 ```javascript
     xpm.use("bower/jquery", "npm/underscore", function($, _){
@@ -76,6 +76,7 @@ npm install xpm2
 - (混合全栈开发) 如果我想让一个文件同时被前后端调用，那么这个文件可以这样写：
 
 ```javascript
+    //这段前后端同时创建了blog集合
     var blogCollection = new Meteor.Collection('blog')
     
     //这段只会在浏览器端被调用 
